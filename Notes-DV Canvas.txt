@@ -1,0 +1,158 @@
+
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+       D+S Tech Labs, Inc.
+  ──────────────────────────────
+         C O D E   L A B
+  ──────────────────────────────
+    Data Visualization Classes
+        Using HTML5 Canvas
+
+           dvCanvas2D
+           dvCanvas3D
+ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+
+
+ ══════════════════════════════════════════════════════════════════════════════
+  Intro:
+ ══════════════════════════════════════════════════════════════════════════════
+
+  This project's goal is to develop two "Data Visualization" support classes
+  in Javascript.  These classes are to be used by websites needing to display
+  semi-realtime data in various forms (bars, graphs, gauges, etc.).
+
+  Each class will use a browser's built-in HTML5 Canvas object.
+  Two dimensional visualization will use the <dvCanvas2D> class.
+  Three dimensional visualization will use the <dvCanvas3D> class.
+
+  It is intended for these classes to be used by custom Data Visualization
+  HTML Elements (DV Widgets).  So the class constructor creates the canvas
+  element itself.  No need to create a <canvas> element in your HTML code.
+
+
+ ══════════════════════════════════════════════════════════════════════════════
+  dvCanvas2D:
+ ══════════════════════════════════════════════════════════════════════════════
+
+  dvCanvas2D Properties:
+
+  ∙ cWidth     - canvas width
+  ∙ cHeight    - canvas height
+  ∙ backColor  - clearing color
+  ∙ canvas     - <canvas> element
+  ∙ cc         - canvas context (2D)
+
+  dvCanvas2D Methods: (all color values can use gradients or patterns)
+
+  ∙ reset             ()
+  ∙ clear             ()
+  ∙ setClipRectangle  (x, y, width, height)
+  ∙ adjustBrightness  (color, amount)
+
+  ∙ drawPixel         (x, y, color)
+  ∙ drawPoint         (x, y, radius, color, thickness-OR-fill)
+  ∙ drawLine          (x1, y1, x2, y2, color, thickness=1, endCap="butt")
+  ∙ drawRectangle     (x, y, width, height, color, thickness-OR-fill)
+  ∙ drawPoly          (vertexArray, color, thickness-OR-fill, joint="miter")
+
+  ∙ drawEllipse       (cx, cy, radX, radY, color, thickness-OR-fill, angle=0)
+  ∙ drawArc           (cx, cy, radius, color, startAngle, stopAngle, thickness=1)
+  ∙ drawCurve         (x1, y1, x2, y2, color, hv="h", thickness=1, endCap="butt")
+  ∙ drawPie           (cx, cy, radius, color, thickness-OR-fill, startPercent, stopPercent)
+
+  ∙ getTextSize       (text, font)
+  ∙ drawText          (x, y, text, font, color)
+
+  ∙ getBlock          (x, y, width, height)
+  ∙ drawBlock         (x, y, block)
+
+  ∙ drawImage         (x, y, image, angle)
+  ∙ drawDraggable     (x, y, url)
+
+  ∙ drawLinearScale   (x, y, width, height, orientation, minValue, maxValue, unit, scaleColor, gridColor)
+  ∙ drawLogScale      (x, y, width, height, orientation, minValue, maxValue, unit, scaleColor, gridColor)
+  ∙ drawCircularScale (cx, cy, radius, minValue, maxValue, startAngle, stopAngle, unit, scaleColor)
+
+
+ ══════════════════════════════════════════════════════════════════════════════
+  dvCanvas3D:
+ ══════════════════════════════════════════════════════════════════════════════
+
+  This class will provide WebGL2 3D visualization using the three.js library.
+  (see threejs.org)
+
+  dvCanvas3D class:
+
+  ∙ Constructor - initializes a Scene using the specified canvas
+  ∙ AddObject
+  ∙ RemoveObject
+  ∙
+  ∙
+
+  dvObject class:
+  ∙ setTexture
+  ∙ move
+  ∙ rotate
+
+  dvObject children:
+
+  ∙ vertex (x, y, z)
+  ∙ Point  (vertex)
+  ∙ Line   (vertex1, vertex2)
+  ∙ Plane  (vertex1, vertex2, vertex3)
+  ∙ Cube
+  ∙
+  ∙
+
+
+ ══════════════════════════════════════════════════════════════════════════════
+  Resources, References and Tools
+ ══════════════════════════════════════════════════════════════════════════════
+
+  ∙ HTML5 Canvas Reference:
+    · https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+
+  ∙ High Performance Tips:
+    · https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Optimizing_canvas
+    ·
+    ·
+
+  ∙ 3D Visualization:
+    · https://threejs.org/
+    ·
+
+  ∙ Control Widgets:
+    · panelbutton   - momentary push button
+    · togglebutton  - on/off (non-momentary) text or image button
+    · switch        - on/off (binary) switch with any set of on/off images
+    · eStop         - emergency stop button with reset required
+    · dial          - rotary selection dial
+    · spinner       - value field using mouse wheel to adjust
+    · slider        - single knob range selector  (https://codepen.io/nicolasjesenberger/pen/BaGjzJy)
+    · dualslider    - dual knob low/high range selector
+    · joystick      - 2D joystick
+    ·
+    ·
+
+  ∙ Data Display Widgets:
+    · led...         - colored LED's: Off, Red, Green, Blue, Yellow, Orange, Purple, White
+    · panellight...  - colored panel lights: Off, Red, Green, Blue, Yellow, Orange, Purple, White
+    · flasher        - flashing panel light with on/off time attributes
+    · digital        - single-device digital display (can use any font, e.g. 7-segment led)
+    · odometer       - spinning wheels with digits 0-9
+    · display        - multiline display screen
+    · growbar        - single-device horizontal or vertical bar whose length represents the data value
+    · gauge          - single-device needle, filled pie slice or donut gauge
+    · bargraph       - multi-device bar graph
+    · timegraph      - multi-device cartesian graph with panning option (value vs. time)
+    · devicegraph    - device value vs. device value - such as voltage vs. temperature
+    · polargraph     - spider or radar Plot
+    · piechart       - a dynamic pie chart that updates its sections on the fly
+    · donutchart     - same as above
+    · chartgraph     - scrolling chart recorder
+    · compass        - a 360° nautical-type compass
+    · bubblefield
+    · venndiagram
+    · bloomfield     - sunburst?
+    · camera         - a digital camera streaming video or single photos
+    ·
+    ·

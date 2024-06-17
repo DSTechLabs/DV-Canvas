@@ -1,0 +1,242 @@
+<!doctype html>
+<!--=======================================================
+//
+//     FILE : index.html
+//
+//  PROJECT : 2D & 3D Data Visualization Testing
+//
+//   AUTHOR : Bill Daniels
+//            Copyright 2023, D+S Tech Labs, Inc.
+//            All Rights Reserved
+//
+//======================================================-->
+
+<html lang="en-us">
+
+  <!-- Head -->
+  <head>
+
+    <!-- These three meta tags MUST come first in the <head> tag. -->
+    <!-- All other <head> content must come AFTER these tags.     -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Metatags -->
+    <meta name="keywords"    content="3D,Visualization,threejs,three.js" />
+    <meta name="description" content="D+S Tech Labs is a collection of work and products in the fields of High-End Audio Speakers, Software, Web Apps, Robotics, CNC Machines, Telescopes and more ..." />
+    <meta name="author"      content="D+S Tech Labs, Inc." />
+    <meta name="copyright"   content="&copy; 2023, D+S Tech Labs, Inc." />
+
+    <title>dvCanvas2D / dvCanvas3D</title>
+
+    <style>
+
+      body
+      {
+        margin           : 0;
+        padding          : 0;
+        min-height       : 100vh;
+        color            : #FFFFFF;
+        background-color : #202030;
+        text-align       : center;
+      }
+
+      .demoButton
+      {
+        margin-bottom    : 1px;
+        padding          : 2px 0 3px 0;
+        width            : 220px;
+        color            : #F0F0F0;
+        background-color : #404040;
+        border-radius    : 5px;
+        font-family      : Verdana, sans-serif;
+        font-size        : 16px;
+        font-weight      : normal;
+      }
+
+      .demoButton:active
+      {
+        padding : 3px 0 2px 0;
+      }
+
+      /*--- Modals --------------------------------------------*/
+
+      #modalBackdrop
+      {
+        display  : none;
+        position : fixed;
+        top      : 0;
+        right    : 0;
+        width    : 100vw;
+        height   : 100vh;
+        z-index  : 9999;
+        overflow : auto;
+
+        background-color : rgba(0, 0, 0, 0.9);
+        opacity          : 1.0;
+
+        text-align     : center;
+        vertical-align : middle;
+      }
+
+      .modalDiv
+      {
+        display   : inline-block;
+        position  : relative;
+        margin    : 0;
+        padding   : 0;
+        top       : 50%;
+        transform : translate(0, -50%);
+        z-index   : 10000;
+
+        color            : #F0F0F0;
+        background-color : transparent;
+      }
+
+      .modalX
+      {
+        display  : inline-block;
+        position : absolute;
+        top      : 1vw;
+        right    : 1vw;
+
+        color : #A00000;
+
+        font-family : sans-serif;
+        font-size   : 4vw;
+        font-weight : bold;
+
+        cursor : pointer;
+      }
+
+    </style>
+
+    <!-- Load Scripts -->
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="dsExtras.js"></script>
+
+
+
+
+<!--
+    <script type="importmap">
+      {
+        "imports":
+        {
+          "three": "https://unpkg.com/three@0.157.0/build/three.module.min.js",
+          "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+        }
+      }
+    </script>
+-->
+
+
+
+
+  </head>
+
+
+  <!-- Body -->
+  <body>
+
+    <!-- For Full Screen Modal Popups -->
+    <div id="modalBackdrop"></div>
+    <br>
+
+    <h1>dvCanvas2D &amp; dvCanvas3D class Testing</h1>
+    <br>
+
+
+    <!--================================================-->
+    <!--  dvCanvas2D                                    -->
+    <!--================================================-->
+
+    <!-- Button Menu -->
+    <div style="display:inline-block; vertical-align:top">
+
+      <div style="margin-bottom:5px; font-size:xx-large">dvCanvas2D</div>
+      <button class="demoButton" onclick="test_TestBounds        ()"> Test Bounds       </button><br>
+      <br>
+
+      <label><input id="cb_transparent" type="checkbox" />Transparent</label>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <label><input id="cb_gradient"    type="checkbox" />Gradient</label><br>
+      <br>
+
+      <button class="demoButton" onclick="test_drawPixel         ()"> drawPixel         </button><br>
+      <button class="demoButton" onclick="test_drawPoint         ()"> drawPoint         </button><br>
+      <button class="demoButton" onclick="test_drawLine          ()"> drawLine          </button><br>
+      <button class="demoButton" onclick="test_drawRectangle     ()"> drawRectangle     </button><br>
+      <button class="demoButton" onclick="test_drawPoly          ()"> drawPoly          </button><br><br>
+
+      <button class="demoButton" onclick="test_drawEllipse       ()"> drawEllipse       </button><br>
+      <button class="demoButton" onclick="test_drawArc           ()"> drawArc           </button><br>
+      <button class="demoButton" onclick="test_drawCurve         ()"> drawCurve         </button><br>
+      <button class="demoButton" onclick="test_drawPie           ()"> drawPie           </button><br><br>
+
+      <button class="demoButton" onclick="test_adjustBrightness  ()"> adjustBrightness  </button><br><br>
+
+      <button class="demoButton" onclick="test_drawText          ()"> drawText          </button><br>
+      <button class="demoButton" onclick="test_getTextSize       ()"> getTextSize       </button><br><br>
+
+      <button class="demoButton" onclick="test_getDrawBlock      ()"> get/drawBlock     </button><br>
+      <button class="demoButton" onclick="test_drawImage         ()"> drawImage         </button><br>
+      <button class="demoButton" onclick="test_drawDraggable     ()"> drawDraggable     </button><br><br>
+
+      <button class="demoButton" onclick="test_drawLinearScale   ()"> drawLinearScale   </button><br>
+      <button class="demoButton" onclick="test_drawLogScale      ()"> drawLogScale      </button><br>
+      <button class="demoButton" onclick="test_drawCircularScale ()"> drawCircularScale </button><br><br>
+
+    </div>
+
+    <div style="display:inline-block; margin-left:20px; vertical-align:top">
+
+      <div style="margin-bottom:5px; font-size:xx-large">Examples</div>
+      <button class="demoButton" onclick="test_Burst       ()"> Burst        </button><br>
+      <button class="demoButton" onclick="test_Web1        ()"> Web 1        </button><br>
+      <button class="demoButton" onclick="test_Web2        ()"> Web 2        </button><br>
+      <button class="demoButton" onclick="test_FractalTree ()"> FractalTree  </button><br>
+      <button class="demoButton" onclick="test_Mandelbrot  ()"> Mandelbrot   </button><br>
+      <button class="demoButton" onclick="test_Snake       ()"> Snake        </button><br>
+      <button class="demoButton" onclick="test_PolyBounce  ()"> Poly Bounce  </button><br>
+
+    </div>
+
+    <div id="canvas2Ddiv" style="display:inline-block; margin-left:40px; vertical-align:top"></div><br>
+    <br>
+    <br>
+    <br>
+
+
+    <!--================================================-->
+    <!--  dvCanvas3D                                    -->
+    <!--================================================-->
+
+    <!-- Button Menu -->
+    <div style="display:inline-block; vertical-align:top">
+
+      <div style="margin-bottom:5px; font-size:xx-large">dvCanvas3D</div>
+      <button class="demoButton" onclick="canvas3D_Cube  ()"> Cube  </button><br>
+      <button class="demoButton" onclick="canvas3D_Wave  ()"> Wave  </button><br>
+      <button class="demoButton" onclick="canvas3D_Pivot ()"> Pivot </button><br>
+
+    </div>
+
+    <canvas id="canvas3D" width="1024" height="768" style="margin-left:40px; vertical-align:top; background-color:#000000"></canvas><br>
+    <br>
+    <br>
+    <br>
+
+
+    <!-- Load scripts -->
+    <script src="dvCanvas2D.js"></script>
+    <script src="dvCanvas2D_Test.js"></script>
+
+    <script src="https://unpkg.com/three@0.157.0/build/three.min.js"></script>
+    <script src="dvCanvas3D_Test.js"></script>
+
+
+  </body>
+
+</html>
