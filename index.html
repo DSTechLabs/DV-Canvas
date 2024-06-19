@@ -30,6 +30,9 @@
 
     <title>dvCanvas2D / dvCanvas3D</title>
 
+    <!-- Common Styles -->
+    <link rel="stylesheet" href="dsStyles.css" />
+
     <style>
 
       body
@@ -58,56 +61,6 @@
       .demoButton:active
       {
         padding : 3px 0 2px 0;
-      }
-
-      /*--- Modals --------------------------------------------*/
-
-      #modalBackdrop
-      {
-        display  : none;
-        position : fixed;
-        top      : 0;
-        right    : 0;
-        width    : 100vw;
-        height   : 100vh;
-        z-index  : 9999;
-        overflow : auto;
-
-        background-color : rgba(0, 0, 0, 0.9);
-        opacity          : 1.0;
-
-        text-align     : center;
-        vertical-align : middle;
-      }
-
-      .modalDiv
-      {
-        display   : inline-block;
-        position  : relative;
-        margin    : 0;
-        padding   : 0;
-        top       : 50%;
-        transform : translate(0, -50%);
-        z-index   : 10000;
-
-        color            : #F0F0F0;
-        background-color : transparent;
-      }
-
-      .modalX
-      {
-        display  : inline-block;
-        position : absolute;
-        top      : 1vw;
-        right    : 1vw;
-
-        color : #A00000;
-
-        font-family : sans-serif;
-        font-size   : 4vw;
-        font-weight : bold;
-
-        cursor : pointer;
       }
 
     </style>
@@ -144,7 +97,7 @@
     <div id="modalBackdrop"></div>
     <br>
 
-    <h1>dvCanvas2D &amp; dvCanvas3D class Testing</h1>
+    <div class="dsTitle">dvCanvas-2D &amp; dvCanvas-3D</div>
     <br>
 
 
