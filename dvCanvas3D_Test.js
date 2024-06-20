@@ -13,8 +13,10 @@
 
 
 
+
 //--- Load Three.js for WebGL 3D Stuff ---
-// import * as THREE from "https://unpkg.com/three@0.153.0/build/three.module.min.js";
+import * as THREE from 'three';
+
 
 
 
@@ -29,6 +31,10 @@ renderer.shadowMap.enabled = true;
 const scene  = new THREE.Scene ();
 const camera = new THREE.PerspectiveCamera (60, canvas3D.width / canvas3D.height, 0.1, 50);  // (fov, aspect ratio, near, far)
 camera.position.set (0, 2, 5);  // x, z, y
+
+// // Add-ons
+// const orbitControls = new OrbitControls( camera, renderer.domElement );
+// const gltfLoader = new GLTFLoader();
 
 // Add light to the Scene
 const pointLight = new THREE.PointLight (0xFFFFFF, 1000);
@@ -53,7 +59,7 @@ scene.add (pointLight);
 
 function clearScene ()
 {
-  for (i=scene.children.length-1; i>0; i--)
+  for (let i=scene.children.length-1; i>0; i--)
     scene.children[i].removeFromParent();
 
   // MEMORY LEAK !!!
@@ -69,7 +75,7 @@ function clearScene ()
 
 //--- canvas3D_Cube -----------------------------------------------------------
 
-function canvas3D_Cube ()
+export const canvas3D_Cube = function ()
 {
   clearScene();
 
@@ -113,7 +119,7 @@ function canvas3D_Cube ()
 
 //--- canvas3D_Wave -----------------------------------------------------------
 
-function canvas3D_Wave ()
+export const canvas3D_Wave = function ()
 {
   clearScene();
 
@@ -121,9 +127,9 @@ function canvas3D_Wave ()
   const cubeMaterial = new THREE.MeshStandardMaterial ({ color: 0x4040C0 });
 
   // Create a wave of points
-  for (x=-22; x<22; x+=.3)
+  for (let x=-22; x<22; x+=.3)
   {
-    for (z=-22; z<22; z+=.3)
+    for (let z=-22; z<22; z+=.3)
     {
       const cube = new THREE.Mesh (cubeGeometry, cubeMaterial);
       const y    = Math.sin (Math.sqrt(x*x + z*z));
@@ -162,7 +168,7 @@ function canvas3D_Wave ()
 
 //--- canvas3D_Pivot ----------------------------------------------------------
 
-function canvas3D_Pivot ()
+export const canvas3D_Pivot = function ()
 {
   clearScene();
 

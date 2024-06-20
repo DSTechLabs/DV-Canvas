@@ -69,23 +69,14 @@
     <script src="jquery-3.6.0.min.js"></script>
     <script src="dsExtras.js"></script>
 
-
-
-
-<!--
     <script type="importmap">
       {
-        "imports":
+        "imports" :
         {
-          "three": "https://unpkg.com/three@0.157.0/build/three.module.min.js",
-          "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+          "three" : "https://unpkg.com/three@0.165.0/build/three.module.min.js"
         }
       }
     </script>
--->
-
-
-
 
   </head>
 
@@ -186,8 +177,19 @@
     <script src="dvCanvas2D.js"></script>
     <script src="dvCanvas2D_Test.js"></script>
 
-    <script src="https://unpkg.com/three@0.157.0/build/three.min.js"></script>
-    <script src="dvCanvas3D_Test.js"></script>
+
+
+
+
+    <script type="module" src="./dvCanvas3D_Test.js"></script>
+    <script type="module">
+      import { canvas3D_Cube  } from "./dvCanvas3D_Test.js"; window.canvas3D_Cube  = canvas3D_Cube;
+      import { canvas3D_Wave  } from "./dvCanvas3D_Test.js"; window.canvas3D_Wave  = canvas3D_Wave;
+      import { canvas3D_Pivot } from "./dvCanvas3D_Test.js"; window.canvas3D_Pivot = canvas3D_Pivot;
+    </script>
+
+
+
 
 
   </body>
