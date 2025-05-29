@@ -257,6 +257,32 @@ function test_adjustBrightness ()
   }
 }
 
+//--- test_shadows ------------------------------------------------------------
+
+function test_shadows ()
+{
+  // Reset this demo
+  reset();
+
+  myCanvas2D.drawRectangle (0, 0, myCanvas2D.cWidth, myCanvas2D.cHeight, '#F0F0F0', fill);
+  myCanvas2D.drawText (10, 10, "Shadows work with rectangles, polygons, text and images.", 'black');
+  myCanvas2D.drawText (10, 25, "Notice the shadow conforms to the shape of transparent PNG images.", 'black');
+
+  // Set shadow specs
+  myCanvas2D.setShadow (10, 10, '#202020', 10);
+
+  // Set some shadowed stuff
+  myCanvas2D.drawRectangle (100, 80, 300, 100, '#004080', fill);
+  myCanvas2D.drawPoly      ([{ x:100, y:250 }, { x:400, y:250 }, { x:250, y:450 }], '#004080');
+
+  // Test if transparent PNG can cast a shadow according to its visible shape
+  myCanvas2D.drawImage (100, 500, "ship.png", () =>
+  {
+    myCanvas2D.setShadow (0, 0, 'transparent', 0);  // turn off shadows
+    myCanvas2D.drawImage (300, 500, "ship.png");    // draw ship without shadows
+  });
+}
+
 //--- test_drawText -----------------------------------------------------------
 
 function test_drawText ()
@@ -350,8 +376,9 @@ function test_drawDraggable ()
   // Fill canvas with background
   myCanvas2D.drawImage (0, 0, "Planet&Moons.jpg", () =>
   {
-    myCanvas2D.drawText (5, 5, "Drag spaceship", '#FFFFFF');
-    myCanvas2D.drawDraggable (200, 100, "ship.png");
+    myCanvas2D.drawText (5,  5, "Drag spaceship", '#FFFFFF');
+    myCanvas2D.drawText (5, 20, "See new coords in console", '#FFFFFF');
+    myCanvas2D.drawDraggable (200, 100, "ship.png", (x, y)=>{ console.info (x + ', ' + y); }, (x, y)=>{ console.info ('Done: x=' + x + ', y=' + y); });
   });
 }
 

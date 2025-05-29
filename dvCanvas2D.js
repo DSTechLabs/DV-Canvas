@@ -65,21 +65,19 @@ class dvCanvas2D
   {
     try
     {
-      // Set properties
-      this.cWidth    = Math.max(Math.floor(width ), 1);  // integer only and minimum of 1
-      this.cHeight   = Math.max(Math.floor(height), 1);  // integer only and minimum of 1
-      this.backColor = backColor == undefined ? 'black' : backColor;
-
       // Create a <canvas> element
       this.canvas = document.createElement ('canvas');
-      this.canvas.setAttribute ('width' , (this.cWidth ).toString());
-      this.canvas.setAttribute ('height', (this.cHeight).toString());
-      this.canvas.style.userSelect = 'none';
 
       // Get the canvas context
       this.cc = this.canvas.getContext ('2d', { alpha:true, willReadFrequently:true });  // transparent and performant
 
-      // Reset to default settings
+      // Set specified size
+      this.resize (width, height);
+
+      this.backColor = backColor == undefined ? 'black' : backColor;
+      this.canvas.style.userSelect = 'none';
+
+      // Reset the context to default settings
       this.reset ();
     }
     catch (ex)
@@ -117,8 +115,38 @@ class dvCanvas2D
       this.cc.textBaseline  = 'top';
       this.cc.textRendering = 'optimizeSpeed';
 
-      // Clear canvas
+      // Clear canvas and shadow
       this.clear ();
+      this.setShadow (0, 0, 'transparent', 0);
+    }
+    catch (ex)
+    {
+      ShowException (ex);
+    }
+  }
+
+  //--- resize --------------------------------------------
+  resize (newWidth, newHeight)
+  {
+    try
+    {
+      // Integer size only
+      newWidth  = Math.floor (newWidth );
+      newHeight = Math.floor (newHeight);
+
+      // Must be non-zero
+      if (newWidth > 0 && newHeight > 0)
+      {
+        // Set new property values for this object and the canvas
+        this.cWidth  = newWidth;
+        this.cHeight = newHeight;
+
+        this.canvas.width  = newWidth;
+        this.canvas.height = newHeight;
+
+        this.canvas.setAttribute ('width' , (this.cWidth ).toString() + 'px');
+        this.canvas.setAttribute ('height', (this.cHeight).toString() + 'px');
+      }
     }
     catch (ex)
     {
@@ -169,6 +197,22 @@ class dvCanvas2D
     }
 
     return color;
+  }
+
+  //--- setShadow -----------------------------------------
+  setShadow (xOffset, yOffset, color, blurDistance)
+  {
+    try
+    {
+      if (xOffset      != undefined) this.cc.shadowOffsetX = xOffset;
+      if (yOffset      != undefined) this.cc.shadowOffsetY = yOffset;
+      if (color        != undefined) this.cc.shadowColor   = color;
+      if (blurDistance != undefined) this.cc.shadowBlur    = blurDistance;
+    }
+    catch (ex)
+    {
+      ShowException (ex);
+    }
   }
 
   //--- drawPixel -----------------------------------------
@@ -546,7 +590,7 @@ class dvCanvas2D
   }
 
   //--- drawDraggable -------------------------------------
-  drawDraggable (x, y, url, allowH = true, allowV = true)  // allow both horizontal and vertical motion by default
+  drawDraggable (x, y, url, dragCallback, doneCallback, allowH=true, allowV=true)  // allow both horizontal and vertical motion by default
   {
     try
     {
@@ -578,13 +622,24 @@ class dvCanvas2D
           {
             // Remove move listener on mouse up and mouse going off canvas
             this.canvas.onpointerup  = // () => { this.canvas.onpointermove = null; }
-            this.canvas.onpointerout = () => { this.canvas.onpointermove = null; }
+            this.canvas.onpointerout = () =>
+            {
+              this.canvas.onpointermove = null;
+              document.body.style.cursor = 'default';
+
+              // Call callback function, if any
+              if (doneCallback != undefined)
+                doneCallback (this.dragX, this.dragY);
+            }
 
             // Limit motion to within canvas (0..max)
             const maxX = this.canvasRect.width  - this.dragImage.width;
             const maxY = this.canvasRect.height - this.dragImage.height;
 
             let newX, newY;
+
+            // Hide cursor
+            document.body.style.cursor = 'none';
 
             // Begin dragging
             this.moveListener = this.canvas.onpointermove = (event) =>
@@ -606,6 +661,10 @@ class dvCanvas2D
 
               // Draw draggable at new location
               this.cc.drawImage (this.dragImage, newX, newY);
+
+              // Call callback function, if any
+              if (dragCallback != undefined)
+                dragCallback (newX, newY);
             }
           }
         };
