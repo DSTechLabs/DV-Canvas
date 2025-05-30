@@ -659,12 +659,12 @@ class dvCanvas2D
               // Replace background
               this.cc.drawImage (this.backImage, -1, -1);  // the whole canvas seems to shift +1 pixel both horiz and vert !!!
 
-              // Draw draggable at new location
-              this.cc.drawImage (this.dragImage, newX, newY);
-
               // Call callback function, if any
               if (dragCallback != undefined)
                 dragCallback (newX, newY);
+
+              // Draw draggable at new location
+              this.cc.drawImage (this.dragImage, newX, newY);
             }
           }
         };
