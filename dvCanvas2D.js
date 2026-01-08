@@ -696,7 +696,7 @@ class dvCanvas2D
                   this.dragY = newY;
 
                   // Replace background
-                  this.cc.clearRect (0, 0, this.canvasRect.width, this.canvasRect.height);  // required so semi-transparent shadows do not stack up
+                  this.cc.clearRect (-1, -1, this.canvasRect.width, this.canvasRect.height);  // required so semi-transparent shadows do not stack up
                   this.cc.drawImage (this.backImage, -1, -1);  // the whole canvas seems to shift +1 pixel both horiz and vert !!!
 
                   // Draw draggable at new location
