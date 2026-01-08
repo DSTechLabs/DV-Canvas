@@ -5,7 +5,7 @@
 //  PROJECT : Common Web App Styles
 //
 //   AUTHOR : Bill Daniels
-//            Copyright 2009-2024, D+S Tech Labs, Inc.
+//            Copyright 2009-2025, D+S Tech Labs, Inc.
 //            All Rights Reserved
 //
 //=======================================================*/
@@ -27,16 +27,17 @@
   --scrollThumb : #0060A0;
   --sliderFill  : #0060A0;
   --dsTeal      : #008080;
+  --shadowColor : rgba(0, 0, 0, 0.6);
 
   /* Theme Colors */
   --themeLightFG  : var(--dark);
-  --themeLightBG  : url('/Images/bg_BrushedMetal_Light.jpg' ) center top repeat-y;
+  --themeLightBG  : url('Images/bg_BrushedMetal_Light.jpg' ) center top repeat-y;
   --themeMediumFG : white;
-  --themeMediumBG : url('/Images/bg_BrushedMetal_Medium.jpg') center top repeat-y;
+  --themeMediumBG : url('Images/bg_BrushedMetal_Medium.jpg') center top repeat-y;
   --themeDarkFG   : var(--light);
-  --themeDarkBG   : url('/Images/bg_BrushedMetal_Dark.jpg'  ) center top repeat-y;
+  --themeDarkBG   : url('Images/bg_BrushedMetal_Dark.jpg'  ) center top repeat-y;
   --themeBlueFG   : var(--light);
-  --themeBlueBG   : url('/Images/bg_BrushedMetal_Blue.jpg'  ) center top repeat-y;
+  --themeBlueBG   : url('Images/bg_BrushedMetal_Blue.jpg'  ) center top repeat-y;
 
   /* Popup Colors */
   --popupFG : var(--light);
@@ -59,8 +60,9 @@
 {
   color               : var(--dark);
   background-color    : #C0C0C0;  /* fallback */
-  background-image    : url('/Images/bg_BrushedMetal_Light.jpg');
+  background-image    : url('Images/bg_BrushedMetal_Light.jpg');
   background-position : center top;
+  background-size     : contain;
   background-repeat   : repeat-y;
 }
 
@@ -68,8 +70,9 @@
 {
   color               : var(--light);
   background-color    : #808080;  /* fallback */
-  background-image    : url('/Images/bg_BrushedMetal_Medium.jpg');
+  background-image    : url('Images/bg_BrushedMetal_Medium.jpg');
   background-position : center top;
+  background-size     : contain;
   background-repeat   : repeat-y;
 }
 
@@ -77,8 +80,9 @@
 {
   color               : var(--light);
   background-color    : #303030;  /* fallback */
-  background-image    : url('/Images/bg_BrushedMetal_Dark.jpg');
+  background-image    : url('Images/bg_BrushedMetal_Dark.jpg');
   background-position : center top;
+  background-size     : contain;
   background-repeat   : repeat-y;
 }
 
@@ -86,8 +90,9 @@
 {
   color               : var(--light);
   background-color    : #3030A0;  /* fallback */
-  background-image    : url('/Images/bg_BrushedMetal_Blue.jpg');
+  background-image    : url('Images/bg_BrushedMetal_Blue.jpg');
   background-position : center top;
+  background-size     : contain;
   background-repeat   : repeat-y;
 }
 
@@ -95,8 +100,9 @@
 
 .themeLight
 {
-  color      : var(--themeLightFG);
-  background : var(--themeLightBG);
+  color           : var(--themeLightFG);
+  background      : var(--themeLightBG);
+  background-size : 100% auto;
 }
 .themeLight a        { text-decoration:none     ; color:#0060A0; }
 .themeLight a:hover  { text-decoration:underline; color:#00A0FF; }
@@ -104,8 +110,9 @@
 
 .themeMedium
 {
-  color      : var(--themeMediumFG);
-  background : var(--themeMediumBG);
+  color           : var(--themeMediumFG);
+  background      : var(--themeMediumBG);
+  background-size : 100% auto;
 }
 .themeMedium a        { text-decoration:none     ; color:#60A0F0; }
 .themeMedium a:hover  { text-decoration:underline; color:#80C0FF; }
@@ -113,8 +120,9 @@
 
 .themeDark
 {
-  color      : var(--themeDarkFG);
-  background : var(--themeDarkBG);
+  color           : var(--themeDarkFG);
+  background      : var(--themeDarkBG);
+  background-size : 100% auto;
 }
 .themeDark a        { text-decoration:none     ; color:#00A0F0; }
 .themeDark a:hover  { text-decoration:underline; color:#00C0FF; }
@@ -122,8 +130,9 @@
 
 .themeBlue
 {
-  color      : var(--themeBlueFG);
-  background : var(--themeBlueBG);
+  color           : var(--themeBlueFG);
+  background      : var(--themeBlueBG);
+  background-size : 100% auto;
 }
 .themeBlue a        { text-decoration:none     ; color:#00A0F0; }
 .themeBlue a:hover  { text-decoration:underline; color:#00C0FF; }
@@ -149,30 +158,30 @@
 
 /*--- Fonts ---------------------------------------------*/
 
-@font-face { font-family : font_adventure          ; src : url('/Fonts/adventure.ttf'          ); }
-@font-face { font-family : font_airstrike          ; src : url('/Fonts/airstrike.ttf'          ); }
-@font-face { font-family : font_anitaSemiSquare    ; src : url('/Fonts/anitaSemiSquare.ttf'    ); }
-@font-face { font-family : font_atomicAge          ; src : url('/Fonts/atomicAge.ttf'          ); }
-@font-face { font-family : font_audioWide          ; src : url('/Fonts/audioWide.ttf'          ); }
-@font-face { font-family : font_beamweapon         ; src : url('/Fonts/beamweapon.ttf'         ); }
-@font-face { font-family : font_beamweaponCondensed; src : url('/Fonts/beamweaponCondensed.ttf'); }
-@font-face { font-family : font_calligraphy        ; src : url('/Fonts/calligraphy.ttf'        ); }
-@font-face { font-family : font_code               ; src : url('/Fonts/code.otf'	             ); }
-@font-face { font-family : font_ethnocentric       ; src : url('/Fonts/ethnocentric.ttf'       ); }
-@font-face { font-family : font_Imaki              ; src : url('/Fonts/Imaki.ttf'              ); }
-@font-face { font-family : font_monospaceTypewriter; src : url('/Fonts/monospaceTypewriter.ttf'); }
-@font-face { font-family : font_rexlia             ; src : url('/Fonts/rexlia.ttf'             ); }
-@font-face { font-family : font_robot              ; src : url('/Fonts/robot.ttf'              ); }
-@font-face { font-family : font_robotoLight        ; src : url('/Fonts/robotoLight.ttf'        ); }
-@font-face { font-family : font_robotoRegular      ; src : url('/Fonts/robotoRegular.ttf'      ); }
-@font-face { font-family : font_sevenSegment_1     ; src : url('/Fonts/sevenSegment_1.otf'     ); }
-@font-face { font-family : font_sevenSegment_2     ; src : url('/Fonts/sevenSegment_2.ttf'     ); }
-@font-face { font-family : font_sevenSegment_3     ; src : url('/Fonts/sevenSegment_3.ttf'     ); }
-@font-face { font-family : font_sevenSegment_4     ; src : url('/Fonts/sevenSegment_4.ttf'     ); }
-@font-face { font-family : font_sonoRegular        ; src : url('/Fonts/sonoRegular.ttf'        ); }
-@font-face { font-family : font_spaceAge           ; src : url('/Fonts/spaceAge.ttf'           ); }
-@font-face { font-family : font_xcelItalic         ; src : url('/Fonts/xcelItalic.ttf'         ); }
-@font-face { font-family : font_xcel               ; src : url('/Fonts/xcel.ttf'               ); }
+@font-face { font-family : font_adventure          ; src : url('Fonts/adventure.ttf'          ); }
+@font-face { font-family : font_airstrike          ; src : url('Fonts/airstrike.ttf'          ); }
+@font-face { font-family : font_anitaSemiSquare    ; src : url('Fonts/anitaSemiSquare.ttf'    ); }
+@font-face { font-family : font_atomicAge          ; src : url('Fonts/atomicAge.ttf'          ); }
+@font-face { font-family : font_audioWide          ; src : url('Fonts/audioWide.ttf'          ); }
+@font-face { font-family : font_beamweapon         ; src : url('Fonts/beamweapon.ttf'         ); }
+@font-face { font-family : font_beamweaponCondensed; src : url('Fonts/beamweaponCondensed.ttf'); }
+@font-face { font-family : font_calligraphy        ; src : url('Fonts/calligraphy.ttf'        ); }
+@font-face { font-family : font_code               ; src : url('Fonts/code.otf'	              ); }
+@font-face { font-family : font_ethnocentric       ; src : url('Fonts/ethnocentric.ttf'       ); }
+@font-face { font-family : font_Imaki              ; src : url('Fonts/Imaki.ttf'              ); }
+@font-face { font-family : font_monospaceTypewriter; src : url('Fonts/monospaceTypewriter.ttf'); }
+@font-face { font-family : font_rexlia             ; src : url('Fonts/rexlia.ttf'             ); }
+@font-face { font-family : font_robot              ; src : url('Fonts/robot.ttf'              ); }
+@font-face { font-family : font_robotoLight        ; src : url('Fonts/robotoLight.ttf'        ); }
+@font-face { font-family : font_robotoRegular      ; src : url('Fonts/robotoRegular.ttf'      ); }
+@font-face { font-family : font_sevenSegment_1     ; src : url('Fonts/sevenSegment_1.otf'     ); }
+@font-face { font-family : font_sevenSegment_2     ; src : url('Fonts/sevenSegment_2.ttf'     ); }
+@font-face { font-family : font_sevenSegment_3     ; src : url('Fonts/sevenSegment_3.ttf'     ); }
+@font-face { font-family : font_sevenSegment_4     ; src : url('Fonts/sevenSegment_4.ttf'     ); }
+@font-face { font-family : font_sonoRegular        ; src : url('Fonts/sonoRegular.ttf'        ); }
+@font-face { font-family : font_spaceAge           ; src : url('Fonts/spaceAge.ttf'           ); }
+@font-face { font-family : font_xcelItalic         ; src : url('Fonts/xcelItalic.ttf'         ); }
+@font-face { font-family : font_xcel               ; src : url('Fonts/xcel.ttf'               ); }
 
 .noWrap
 {
@@ -277,7 +286,7 @@
   top      : 0;
   right    : 20px;
 
-  color : #C00000;
+  color : #F00000;
 
   font-family : sans-serif;
   font-size   : 60px;
@@ -286,12 +295,17 @@
   cursor : pointer;
 }
 
+.dsHidden
+{
+  display : none;
+}
+
 /*--- Titles --------------------------------------------*/
 
 .dsTitle
 {
   font-family    : font_beamweapon, serif;
-  font-size      : 3em;
+  font-size      : clamp(40px, 5vw, 80px);
   font-weight    : normal;
   letter-spacing : 0.05em;
   text-shadow    : 0.08em 0.08em 0.08em var(--dark);
@@ -300,7 +314,7 @@
 .dsSubtitle
 {
   font-family    : font_beamweaponCondensed, serif;
-  font-size      : 2em;
+  font-size      : clamp(20px, 2.5vw, 40px);
   font-weight    : normal;
   letter-spacing : 0.05em;
   text-shadow    : 0.04em 0.04em 0.04em var(--dark);
@@ -308,9 +322,9 @@
 
 /*--- Panel Labels --------------------------------------*/
 
-.dsLabelL { font-family:font_robotoRegular; font-size:2.0em; font-weight:800; letter-spacing:-0.03em; text-shadow:0.02em 0.02em 0 var(--light); }
-.dsLabelM { font-family:font_robotoRegular; font-size:1.5em; font-weight:600; letter-spacing:-0.03em; text-shadow:0.02em 0.02em 0 var(--light); }
-.dsLabelS { font-family:font_robotoRegular; font-size:1.0em; font-weight:400; letter-spacing:-0.03em; text-shadow:0.02em 0.02em 0 var(--light); }
+.dsLabelS { font-family:font_robotoRegular; font-size:1.0em; letter-spacing:-0.03em; }
+.dsLabelM { font-family:font_robotoRegular; font-size:1.5em; letter-spacing:-0.04em; }
+.dsLabelL { font-family:font_robotoRegular; font-size:2.0em; letter-spacing:-0.05em; }
 
 /*--- Dividers ------------------------------------------*/
 
@@ -423,19 +437,18 @@
   padding       : 0.2em 0.5em 0.2em 0.5em;
   cursor        : pointer;
 
-  border         : none;
+  border         : 0.05em solid var(--dark);
   border-radius  : 0.2em;
   font-size      : inherit;
   line-height    : 1;
   vertical-align : bottom;
   white-space    : nowrap;
 
-  background  : linear-gradient(to bottom, var(--light), var(--medium));
+  background  : linear-gradient(to bottom, var(--light), #B0B0B0);
   text-shadow : 0.02em 0.02em var(--light);
 
-  box-shadow : 0  0.04em 0.02em 0.04em rgba(255, 255, 255, 0.6) inset,
-               0 -0.04em 0.02em 0.04em rgba(  0,   0,   0, 0.2) inset,
-               0  0      0.02em 0.04em rgba(  0,   0,   0, 0.5);
+  box-shadow : 0  0.04em 0.02em 0.04em rgba(255, 255, 255, 1.0) inset,
+               0 -0.04em 0.02em 0.04em rgba(  0,   0,   0, 0.2) inset;
 }
 
 .dsButton:active
@@ -446,8 +459,7 @@
   text-shadow : 0.02em 0.02em #00A0F0;
 
   box-shadow : 0  0.1em 0.1em var(--gradStop ) inset,
-               0 -0.1em 0.1em var(--gradStart) inset,
-               0  0     0.02em 0.04em rgba(0, 0, 0, 0.5);
+               0 -0.1em 0.1em var(--gradStart) inset;
 
 }
 
@@ -457,39 +469,37 @@
 {
   position       : relative;
   z-index        : 10;
-  margin         : 0.04em;
+  margin         : 0.1em;
   padding-left   : 0.5em;  /* fixed */
   padding-right  : 0.5em;  /* fixed */
-  padding-top    : 0.06em;
+  padding-top    : 0.05em;
   padding-bottom : 0.1em;
   cursor         : pointer;
   aspect-ratio   : 1/1;
 
-  border         : none;
+  border         : 0.05em solid var(--dark);
   border-radius  : 50%;
   font-size      : inherit;
   line-height    : 1;
   vertical-align : bottom;
   white-space    : nowrap;
 
-  background  : linear-gradient(to bottom, var(--light), #A0A0A0);
-  text-shadow : .02em .02em #D0D0D0;
+  background  : linear-gradient(to bottom, var(--light), #B0B0B0);
+  text-shadow : 0.02em 0.02em var(--light);
 
-  box-shadow : 0  0.04em 0.02em 0.04em rgba(255, 255, 255, 0.6) inset,
-               0 -0.04em 0.02em 0.04em rgba(  0,   0,   0, 0.2) inset,
-               0  0      0.02em 0.04em rgba(  0,   0,   0, 0.5);
+  box-shadow : 0  0.1em 0.05em 0.1em rgba(255, 255, 255, 1.0) inset,
+               0 -0.1em 0.05em 0.1em rgba(  0,   0,   0, 0.2) inset;
 }
 
 .dsButtonRound:active
 {
   padding-top    : 0.1em;
-  padding-bottom : 0.06em;
+  padding-bottom : 0.05em;
   background     : linear-gradient(to bottom, var(--gradStart), var(--gradStop));
-  text-shadow    : 0.02em .02em #002020;
+  text-shadow    : 0.02em 0.02em #00A0F0;
 
-  box-shadow : 0  0.04em 0.02em 0.04em rgba(  0,   0,   0, 0.2) inset,
-               0 -0.04em 0.02em 0.04em rgba(255, 255, 255, 0.2) inset,
-               0  0      0.02em 0.04em rgba(  0,   0,   0, 0.5);
+  box-shadow : 0  0.1em 0.1em var(--gradStop ) inset,
+               0 -0.1em 0.1em var(--gradStart) inset;
 }
 
 
@@ -549,12 +559,13 @@
 
 .dsInput[type="button"]
 {
-  padding : 0.15em 0.2em 0.2em 0.2em;
+  padding : 0.1em 0.2em 0.2em 0.2em;
   height  : 1.25em;
 
+  border     : 0.05em solid var(--dark);
   box-shadow : 0  0.04em 0.02em 0.04em rgba(255, 255, 255, 0.6) inset,
-               0 -0.04em 0.02em 0.04em rgba(  0,   0,   0, 0.2) inset,
-               0  0      0.02em 0.04em rgba(  0,   0,   0, 0.5);
+               0 -0.04em 0.02em 0.04em rgba(  0,   0,   0, 0.2) inset;
+               /* 0  0      0.02em 0.04em rgba(  0,   0,   0, 0.5); */
 
   text-shadow : 0.02em 0.02em var(--light);
   text-align  : center;
@@ -562,14 +573,14 @@
 
 .dsInput[type="button"]:active
 {
-  padding : 0.2em 0.2em 0.15em 0.2em;  /* vertically adjusted from non-active padding */
+  padding : 0.15em 0.2em 0.15em 0.2em;  /* vertically adjusted from non-active padding */
 
   background  : linear-gradient(to bottom, var(--gradStart), var(--gradStop));
   text-shadow : 0.02em 0.02em #00A0F0;
 
   box-shadow : 0  0.1em 0.1em var(--gradStop ) inset,
-               0 -0.1em 0.1em var(--gradStart) inset,
-               0  0 0.02em 0.04em rgba(0, 0, 0, 0.5);
+               0 -0.1em 0.1em var(--gradStart) inset;
+               /* 0  0 0.02em 0.04em rgba(0, 0, 0, 0.5); */
 }
 
 /*--- type="checkbox" -----------------------------------*/
@@ -666,10 +677,10 @@
 .dsInput[type="number"]::-webkit-inner-spin-button,
 .dsInput[type="number"]::-webkit-outer-spin-button
 {
-  margin  : 0.2em 0 0.2em 0.4em;
-  padding : 0.6em 0.3em;
-
-  opacity : 1;  /* keep arrow buttons visible */
+  margin    : 0 0 0 0.2em;
+  padding   : 0 0.2em;
+  font-size : 2em;
+  opacity   : 1;  /* keep arrow buttons visible */
 }
 
 /*--- type="radio" --------------------------------------*/
@@ -788,7 +799,7 @@
   box-shadow : 0 0 .1em  .02em rgba(0, 0, 0, .5) inset,
                0 0 .02em .02em rgba(0, 0, 0, .5);
 
-  vertical-align : middle;
+  vertical-align : top;
 }
 
 .dsSwitch:checked
@@ -985,9 +996,7 @@
 
 .dsTabControl
 {
-  display    : inline-block;
-  margin-top : 0.35em;  /* should not be necessary */
-
+  display        : inline-block;
   background     : transparent;
   font-size      : inherit;
   text-align     : left;
@@ -997,29 +1006,30 @@
 
 .dsTabBar
 {
-  margin     : 0;
-  padding    : 0;
-  background : transparent;
+  display     : inline-block;
+  margin-left : 0.2em;
+  padding     : 0;
+  background  : transparent;
 }
 
 .dsTabButton
 {
   appearance : none;
   margin     : 0;
-  cursor     : pointer;
 }
 
 .dsTabButton + label
 {
-  margin  : 0;
-  padding : .2em .5em .3em .5em;
-  z-index : 0;
+  display     : inline-block;
+  /* margin-left : -0.2em; */
+  padding     : .2em .4em .2em .4em;
+  z-index     : 0;
 
   border           : 0.05em solid var(--dark);
   border-radius    : 0.2em 0.2em 0 0;
 
-  color      : var(--dark);
-  background : linear-gradient(to bottom, #808080, #C0C0C0);
+  color      : var(--medium);
+  background : linear-gradient(to bottom, #C0C0C0, #D0D0D0);
   box-shadow : none;
   z-index    : 0;
 
@@ -1040,11 +1050,10 @@
 
 .dsTabContent
 {
-  display    : none;
-  margin-top : 0.35em;  /* should not be necessary */
-  width      : 100%;
-  padding    : 0.5em;
-  z-index    : 0;
+  display : none;
+  width   : 100%;
+  padding : 0.5em;
+  z-index : 0;
 
   border-radius : 0 0 0.2em 0.2em;
   box-sizing    : border-box;
@@ -1121,6 +1130,7 @@
   top         : 0.1em;
   width       : 5em;
   white-space : pre-wrap;
+  font-family : font_beamweaponCondensed, sans-serif;
   font-size   : 0.74em;
   text-align  : center;
 }
@@ -1255,7 +1265,7 @@
 
   color               : var(--white);
   background-color    : #000080;  /* fallback */
-  background-image    : url('/Images/bg_BrushedMetal_Blue.jpg');
+  background-image    : url('Images/bg_BrushedMetal_Blue.jpg');
   background-position : center top;
   background-repeat   : repeat-y;
   box-shadow          : 0.05em 0.05em 0.1em 0.05em var(--dark) inset;
@@ -1314,12 +1324,14 @@
 
 /*--- Splash --------------------------------------------*/
 
-#dsSplash
+.dsSplash
 {
+/*
   display         : flex;
   flex-flow       : column nowrap;
   justify-content : space-evenly;
   align-items     : center;
+ */
 
   margin     : 0;
   padding    : 0;
@@ -1327,7 +1339,7 @@
   height     : 100vh;
 
   color      : var(--light);
-  background : url('/Images/bg_BrushedMetal_Dark.jpg');
+  background : url('Images/bg_BrushedMetal_Dark.jpg');
 
   text-align : center;
 }
@@ -1346,11 +1358,12 @@
   font-kerning   : none;
   font-size      : clamp(30px, 5vw, 60px);
   letter-spacing : 0.1em;
+  line-height    : 1em;
   text-shadow    : 0.1em 0.1em 0.1em var(--dark);
   white-space    : nowrap;
 }
 
-#dsSplashLogo
+.dsSplashLogo
 {
   width : clamp(200px, 50vw, 400px);
 }
@@ -1363,15 +1376,15 @@
   text-shadow : 0.05em 0.05em 0.1em var(--dark);
 }
 
-#dsSplashButton
+.dsSplashButton
 {
   padding : 0.2em 0.7em 0.2em 0.5em;
 
   font-family : font_airstrike, serif;
-  font-size   : clamp(30px, 5vw, 50px);
+  font-size   : clamp(30px, 4vw, 50px);
 }
 
-#dsSplashCopyright
+.dsSplashCopyright
 {
   font-family : serif;
   font-size   : clamp(16px, 1.5vw, 24px);
