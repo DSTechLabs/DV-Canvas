@@ -379,7 +379,7 @@ function test_drawDraggable ()
     myCanvas2D.drawText (5,  5, "Drag spaceship", '#FFFFFF');
     myCanvas2D.drawText (5, 20, "See new coords in console", '#FFFFFF');
     // myCanvas2D.drawDraggable (200, 100, "ship.png", (x, y)=>{ console.info (x + ', ' + y); }, (x, y)=>{ console.info ('Done: x=' + x + ', y=' + y); }, true, true);
-    myCanvas2D.drawDraggable (200, 100, "ship.png", myDraggable, myDraggableDone, true, true);
+    myCanvas2D.drawDraggable (200, 100, "ship.png", myDraggable, myDraggableDone, false, true, true);
   });
 }
 
