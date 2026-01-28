@@ -1,3 +1,4 @@
 @echo off
 echo --- DV Canvas App Server ---
-python -m http.server
+rem python -m http.server
+python serve.py

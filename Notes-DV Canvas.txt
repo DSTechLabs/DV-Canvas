@@ -7,8 +7,8 @@
     Data Visualization Classes
         Using HTML5 Canvas
 
-           dvCanvas2D
-           dvCanvas3D
+           DVCanvas2D
+           DVCanvas3D
  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
 
@@ -21,8 +21,8 @@
   semi-realtime data in various forms (bars, graphs, gauges, etc.).
 
   Each class will use a browser's built-in HTML5 Canvas object.
-  Two dimensional visualization will use the <dvCanvas2D> class.
-  Three dimensional visualization will use the <dvCanvas3D> class.
+  Two dimensional visualization will use the <DVCanvas2D> class.
+  Three dimensional visualization will use the <DVCanvas3D> class.
 
   It is intended for these classes to be used by custom Data Visualization
   HTML Elements (DV Widgets).  So the class constructor creates the canvas
@@ -30,10 +30,10 @@
 
 
  ══════════════════════════════════════════════════════════════════════════════
-  dvCanvas2D:
+  DVCanvas2D:
  ══════════════════════════════════════════════════════════════════════════════
 
-  dvCanvas2D Properties:
+  DVCanvas2D Properties:
 
   ∙ cWidth     - canvas width
   ∙ cHeight    - canvas height
@@ -41,7 +41,7 @@
   ∙ canvas     - <canvas> element
   ∙ cc         - canvas context (2D)
 
-  dvCanvas2D Methods: (all color values can use gradients or patterns)
+  DVCanvas2D Methods: (all color values can use gradients or patterns)
 
   ∙ reset             ()
   ∙ clear             ()
@@ -74,13 +74,13 @@
 
 
  ══════════════════════════════════════════════════════════════════════════════
-  dvCanvas3D:
+  DVCanvas3D:
  ══════════════════════════════════════════════════════════════════════════════
 
   This class will provide WebGL2 3D visualization using the three.js library.
   (see threejs.org)
 
-  dvCanvas3D class:
+  DVCanvas3D class:
 
   ∙ Constructor - initializes a Scene using the specified canvas
   ∙ AddObject

@@ -1,13 +1,13 @@
 //=============================================================================
 //
-//     FILE  : dvCanvas2D.js
+//     FILE  : DVCanvas2D.js
 //
 //   PROJECT : Any browser-based project
 //
 //  FUNCTION : Wrapper methods for HTML5 Canvas Context (2D)
 //             Plus some Data Visualization methods
 //
-//     NOTES : This class creates the <canvas> element for you.
+//     NOTES : This class takes the ID to your canvas element.
 //             ∙ The canvas element performs better when its height
 //               is a power of 2 (height = 16, 32, 64, 128, 256, 512, 1024, ...
 //             ∙ Do not use style to set canvas dimensions (causes blurry dithered plots).
@@ -22,60 +22,77 @@
 //=============================================================================
 
 
-//--- Globals -----------------------------------------------------------------
-
-const fill        = 0;
-const pi          = Math.PI;
-const twopi       = 2 * pi;
-const piOver2     = pi / 2;
-const piOver4     = pi / 4;
-const deg2rad     = pi / 180;
-const percent2rad = twopi / 100;
-
-//--- Scale Orientations ---
-const ScaleOrientation = Object.freeze
-({
-	HorizTop    : Symbol('1'),
-	HorizBottom : Symbol('2'),
-	VertLeft    : Symbol('3'),
-	VertRight   : Symbol('4')
-})
-
-
 //=============================================================================
-//  dvCanvas2D class (Data Visualization Canvas)
+//  DVCanvas2D class (Data Visualization Canvas)
 //=============================================================================
 
-class dvCanvas2D
+export class DVCanvas2D
 {
   //--- Public properties ---------------------------------
-  cWidth       = 1;          // canvas width
-  cHeight      = 1;          // canvas height
-  backColor    = '#000000';  // clearing color
-  canvas       = undefined;  // <canvas> element
-  cc           = undefined;  // canvas context 2D
-  canvasRect   = undefined;  // bounding client rect of canvas
-  backImage    = undefined;  // background of draggable (full image of canvas)
-  dragImage    = undefined;  // image of draggable
-  dragX        = 0;          // current draggable location
-  dragY        = 0;          // current draggable location
+  fill    = 0;
+  pi      = Math.PI;
+  twopi   = 2 * this.pi;
+  piOver2 = this.pi / 2;
+  deg2rad = this.pi / 180;
+  endCaps = [ "butt", "round", "square" ];
+  joints  = [ "round", "bevel", "miter" ];
+
+  //--- Scale Orientations (enum) ---
+  ScaleOrientation = Object.freeze
+  ({
+    HorizTop    : Symbol('1'),
+    HorizBottom : Symbol('2'),
+    VertLeft    : Symbol('3'),
+    VertRight   : Symbol('4')
+  })
+
+  cWidth     = 1;            // canvas width
+  cHeight    = 1;            // canvas height
+  backColor  = '#000000';  // clearing color
+  canvas     = undefined;    // <canvas> element
+  cc         = undefined;    // canvas context 2D
+  canvasRect = undefined;    // bounding client rect of canvas
+  backImage  = undefined;    // background of draggable (full image of canvas)
+  dragImage  = undefined;    // image of draggable
+  dragX      = 0;            // current draggable location
+  dragY      = 0;            // current draggable location
 
   //--- Constructor ---------------------------------------
-  constructor (width, height, backColor)
+  constructor (canvasElementID)
   {
     try
     {
-      // Create a <canvas> element
-      this.canvas = document.createElement ('canvas');
+      // Get provided canvas element
+      this.canvas    = document.getElementById (canvasElementID);  // Must have width and height attributes set in the HTML
+      this.cWidth    = this.canvas.getAttribute ("width" );
+      this.cHeight   = this.canvas.getAttribute ("height");
+      this.backColor = this.canvas.style.backgroundColor;
+      if (this.backColor == undefined || this.backColor == null)
+        this.backColor = '#000000';
+
+      this.canvas.style.userSelect = 'none';
 
       // Get the canvas context
       this.cc = this.canvas.getContext ('2d', { alpha:true, willReadFrequently:true });  // transparent and performant
 
-      // Set specified size
-      this.resize (width, height);
 
-      this.backColor = backColor == undefined ? 'black' : backColor;
-      this.canvas.style.userSelect = 'none';
+
+      // // Adjust for device pixel ratio
+      // const dpr = window.devicePixelRatio || 1; // Device Pixel Ratio
+      // console.info ('dpr = ' + dpr);
+      //
+      // const rect = this.canvas.getBoundingClientRect();
+      // console.info ('bounding rect = ' + rect.width + 'x' + rect.height);
+      //
+      // this.canvas.width  = rect.width  * dpr;
+      // this.canvas.height = rect.height * dpr;
+      // this.cc.scale (dpr, dpr);  // Scale context to match the increased resolution
+
+
+
+
+      // // Set specified size
+      // this.resize (width, height);
 
       // Reset the context to default settings
       this.reset ();
@@ -102,7 +119,7 @@ class dvCanvas2D
       this.cc.lineCap               = 'butt';  // quicker lines
       this.cc.shadowBlur            = 0;       // no shadow blur
       this.cc.filter                = 'none';  // no filtering
-      this.cc.imageSmoothingEnabled = false;   // no smoothing
+      this.cc.imageSmoothingEnabled = false;   // no smoothing/dithering
       this.cc.originClean           = true;    // images with opaque content allowed
 
       // Default colors
@@ -144,8 +161,8 @@ class dvCanvas2D
         this.canvas.width  = newWidth;
         this.canvas.height = newHeight;
 
-        this.canvas.setAttribute ('width' , (this.cWidth ).toString() + 'px');
-        this.canvas.setAttribute ('height', (this.cHeight).toString() + 'px');
+        this.canvas.setAttribute ('width' , (this.cWidth ).toString());  //  + 'px'
+        this.canvas.setAttribute ('height', (this.cHeight).toString());  //  + 'px'
       }
     }
     catch (ex)
@@ -235,9 +252,9 @@ class dvCanvas2D
     try
     {
       this.cc.beginPath ();
-      this.cc.arc (x, y, radius, 0, twopi);
+      this.cc.arc (x, y, radius, 0, this.twopi);
 
-      if (thickness == fill)
+      if (thickness == this.fill)
       {
         this.cc.fillStyle = color;
         this.cc.fill ();
@@ -279,7 +296,7 @@ class dvCanvas2D
   {
     try
     {
-      if (thickness == fill)
+      if (thickness == this.fill)
       {
         this.cc.fillStyle = color;
         this.cc.fillRect (x, y, width-1, height-1);
@@ -312,7 +329,7 @@ class dvCanvas2D
 
       this.cc.lineJoin = joint;
 
-      if (thickness == fill)
+      if (thickness == this.fill)
       {
         this.cc.fillStyle = color;
         this.cc.fill ();
@@ -341,9 +358,9 @@ class dvCanvas2D
     try
     {
       this.cc.beginPath ();
-      this.cc.ellipse (cx, cy, radX, radY, angle*deg2rad, 0, twopi);
+      this.cc.ellipse (cx, cy, radX, radY, angle*this.deg2rad, 0, this.twopi);
 
-      if (thickness == fill)
+      if (thickness == this.fill)
       {
         this.cc.fillStyle = color;
         this.cc.fill ();
@@ -378,9 +395,9 @@ class dvCanvas2D
         return;
 
       this.cc.beginPath ();
-      this.cc.arc (cx, cy, radius, startAngle*deg2rad-piOver2, stopAngle*deg2rad-piOver2);
+      this.cc.arc (cx, cy, radius, startAngle*this.deg2rad-this.piOver2, stopAngle*this.deg2rad-this.piOver2);
 
-      if (thickness == fill)
+      if (thickness == this.fill)
       {
         this.cc.fillStyle = color;
         this.cc.fill ();
@@ -467,8 +484,8 @@ class dvCanvas2D
       if (startAngle == stopAngle)
         return;
 
-      startAngle = startAngle * deg2rad - piOver2;
-      stopAngle  = stopAngle  * deg2rad - piOver2;
+      startAngle = startAngle * this.deg2rad - this.piOver2;
+      stopAngle  = stopAngle  * this.deg2rad - this.piOver2;
 
       this.cc.beginPath ();
       this.cc.arc (cx, cy, radius, startAngle, stopAngle);
@@ -569,7 +586,7 @@ class dvCanvas2D
     try
     {
       if (loadedCallback == undefined)
-        throw 'ERROR: dvCanvas2D.loadImage(): loadedCallback is required.';
+        throw 'ERROR: DVCanvas2D.loadImage(): loadedCallback is required.';
 
       // url cannot be file:///....
       // Must load from local or remote server to avoid CORS block
@@ -738,10 +755,10 @@ class dvCanvas2D
     //-------------------------------------------------
     //  - This method can draw a linear scale in four orientations.
     //    Set orientation to one of:
-    //      ScaleOrientation.HorizTop
-    //      ScaleOrientation.HorizBottom
-    //      ScaleOrientation.VertLeft
-    //      ScaleOrientation.VertRight
+    //      this.ScaleOrientation.HorizTop
+    //      this.ScaleOrientation.HorizBottom
+    //      this.ScaleOrientation.VertLeft
+    //      this.ScaleOrientation.VertRight
     //
     //  - Major scale values step by 1,2 or 5 * 10^n
     //    (1,2,5 or 10,20,50 or 100,200,500 etc.)
@@ -763,10 +780,10 @@ class dvCanvas2D
       let o = 'vr';
       switch (orientation)
       {
-        case ScaleOrientation.HorizTop    : o = 'ht'; break;
-        case ScaleOrientation.HorizBottom : o = 'hb'; break;
-        case ScaleOrientation.VertLeft    : o = 'vl'; break;
-      //case ScaleOrientation.VertRight   : o = 'vr'; break;
+        case this.ScaleOrientation.HorizTop    : o = 'ht'; break;
+        case this.ScaleOrientation.HorizBottom : o = 'hb'; break;
+        case this.ScaleOrientation.VertLeft    : o = 'vl'; break;
+      //case this.ScaleOrientation.VertRight   : o = 'vr'; break;
       }
 
       // Set font for scale text
@@ -909,10 +926,10 @@ class dvCanvas2D
       let o = 'vr';
       switch (orientation)
       {
-        case ScaleOrientation.HorizTop    : o = 'ht'; break;
-        case ScaleOrientation.HorizBottom : o = 'hb'; break;
-        case ScaleOrientation.VertLeft    : o = 'vl'; break;
-      //case ScaleOrientation.VertRight   : o = 'vr'; break;
+        case this.ScaleOrientation.HorizTop    : o = 'ht'; break;
+        case this.ScaleOrientation.HorizBottom : o = 'hb'; break;
+        case this.ScaleOrientation.VertLeft    : o = 'vl'; break;
+      //case this.ScaleOrientation.VertRight   : o = 'vr'; break;
       }
 
       // Set font for scale text
@@ -1092,8 +1109,8 @@ class dvCanvas2D
       // this.drawPie (cx, cy, radius, randColor(), startAngle, stopAngle);
       // //-----------------------------------------------------------------
 
-      const startRad    = (startAngle - 90) * deg2rad;
-      const stopRad     = (stopAngle  - 90) * deg2rad;
+      const startRad    = (startAngle - 90) * this.deg2rad;
+      const stopRad     = (stopAngle  - 90) * this.deg2rad;
       const scaleFactor = (stopRad - startRad) / (maxValue - minValue);
 
       // Set font for scale text
@@ -1180,4 +1197,4 @@ class dvCanvas2D
     }
   }
 
-}  // class dvCanvas2D
+}  // class DVCanvas2D

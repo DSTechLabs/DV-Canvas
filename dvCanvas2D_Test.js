@@ -1,61 +1,43 @@
-//=============================================================================
+//=========================================================
 //
-//     FILE  : dvCanvas2D_Test.js
+//     FILE  : DVCanvas2D_Test.js
 //
 //   PROJECT : Data Visualization Widget Support
 //
-//  FUNCTION : Testing of the dvCanvas2D class
+//  FUNCTION : Testing of the DVCanvas2D class
 //
 //   AUTHOR  : Bill Daniels
-//             Copyright 2023, D+S Tech Labs, Inc.
+//             Copyright 2023-2026, D+S Tech Labs, Inc.
 //             All Rights Reserved
 //
-//=============================================================================
+//=========================================================
 
+//--- Imports ---------------------------------------------
 
-// Create a dvCanvas2D object and add its canvas element to the canvas2Ddiv
-const myCanvas2D = new dvCanvas2D (1024, 768);
-document.getElementById ("canvas2Ddiv").append (myCanvas2D.canvas);
+import { DVCanvas2D } from "./DVCanvas2D.js";
 
+//--- Globals ---------------------------------------------
 
-//--- Globals -----------------------------------------------------------------
+// Create a DVCanvas2D object
+const myCanvas2D = new DVCanvas2D ("canvas2D");
+const ccx        = myCanvas2D.cWidth  / 2;
+const ccy        = myCanvas2D.cHeight / 2;
 
-const ccx      = myCanvas2D.cWidth/2;
-const ccy      = myCanvas2D.cHeight/2;
-const endCaps  = [ "butt", "round", "square" ];
-const joints   = [ "round", "bevel", "miter" ];
-let   interval = undefined;  // for interval timers
-let   keyDown  = undefined;  // for keydown event listener
+let interval2D = undefined;  // for interval timers
+let keydown2D  = undefined;  // for keydown event listener
 
-//--- Random integer, float, width, height, color, etc. -----------------------
-
-function randFloat    (min, max) { return (max-min) * Math.random() + min;                           }
-function randInt      (min, max) { return Math.round (randFloat (min, max));                         }
-function randBin      ()         { return (randInt(0, 1) == 0);                                      }
-function rand2DWidth  ()         { return randInt (0, myCanvas2D.cWidth);                            }
-function rand2DHeight ()         { return randInt (0, myCanvas2D.cHeight);                           }
-function randAngle    ()         { return randFloat (0, 360);                                        }
-function randColor    ()         { return "#" + randInt (0, 16777216).toString(16).padStart(6, '0'); }
-function randGradient (x1, y1, x2, y2)
-{
-  const grad = myCanvas2D.cc.createLinearGradient(x1, y1, x2, y2);
-  grad.addColorStop(0.0, randColor());
-  grad.addColorStop(0.5, randColor());
-  grad.addColorStop(1.0, randColor());
-  return grad;
-}
-
-function isTrans () { return document.getElementById("cb_transparent").checked; }
-function isGrad  () { return document.getElementById("cb_gradient"   ).checked; }
-
+function rand2DWidth  () { return Utils.randInt (0, myCanvas2D.cWidth ); }
+function rand2DHeight () { return Utils.randInt (0, myCanvas2D.cHeight); }
+function isTrans      () { return document.getElementById("cb_transparent").checked; }
+function isGrad       () { return document.getElementById("cb_gradient"   ).checked; }
 
 //--- reset -------------------------------------------------------------------
 
 function reset ()
 {
   // Clear interval timer and keydown event listener, if any
-  if (interval != undefined) { clearInterval (interval); interval = undefined; }
-  if (keyDown  != undefined) { removeEventListener (keyDown, 'keyDown'); keyDown = undefined; }
+  if (interval2D != undefined) { clearInterval (interval2D); interval2D = undefined; }
+  if (keydown2D  != undefined) { removeEventListener (keydown2D, 'keyDown'); keydown2D = undefined; }
 
   // Reset the canvas
   myCanvas2D.reset ();
@@ -71,8 +53,11 @@ function reset ()
 //--- test_TestBounds ---------------------------------------------------------
 
 let drawn = false;
-function test_TestBounds ()
+export function test_TestBounds ()
 {
+  // Reset this demo
+  reset();
+
   if (drawn)
   {
     myCanvas2D.clear ();
@@ -80,43 +65,38 @@ function test_TestBounds ()
   }
   else
   {
-    myCanvas2D.drawLine (0, 0, 0, myCanvas2D.cHeight, "#FFFF00");
-    myCanvas2D.drawLine (myCanvas2D.cWidth-1, 0, myCanvas2D.cWidth-1, myCanvas2D.cHeight, "#FFFF00");
-
-    myCanvas2D.drawLine (0, 0, myCanvas2D.cWidth-1, 0, "#FFFF00");
-    myCanvas2D.drawLine (0, myCanvas2D.cHeight-1, myCanvas2D.cWidth-1, myCanvas2D.cHeight-1, "#FFFF00");
-
+    myCanvas2D.drawRectangle (0, 0, myCanvas2D.cWidth, myCanvas2D.cHeight, "#FFFF00");
     drawn = true;
   }
 }
 
 //--- test_drawPixel ----------------------------------------------------------
 
-function test_drawPixel ()
+export function test_drawPixel ()
 {
   // Reset this demo
   reset();
 
   // Draw it
   for (let i=0; i<1000; i++)
-    myCanvas2D.drawPixel (rand2DWidth(), rand2DHeight(), randColor());
+    myCanvas2D.drawPixel (rand2DWidth(), rand2DHeight(), Utils.randColor());
 }
 
 //--- test_drawPoint ----------------------------------------------------------
 
-function test_drawPoint ()
+export function test_drawPoint ()
 {
   // Reset this demo
   reset();
 
   // Non-filled points
   for (let i=0; i<100; i++)
-    myCanvas2D.drawPoint (rand2DWidth(), rand2DHeight(), randInt(1,20), randColor(), randBin() ? fill : randInt(1,10));
+    myCanvas2D.drawPoint (rand2DWidth(), rand2DHeight(), Utils.randInt(1,20), Utils.randColor(), Utils.randBin() ? myCanvas2D.fill : Utils.randInt(1,10));
 }
 
 //--- test_drawLine -----------------------------------------------------------
 
-function test_drawLine ()
+export function test_drawLine ()
 {
   // Reset this demo
   reset();
@@ -128,14 +108,14 @@ function test_drawLine ()
     const y1 = rand2DHeight ();
     const x2 = rand2DWidth  ();
     const y2 = rand2DHeight ();
-    const c  = isGrad() ? randGradient(x1, y1, x2, y2) : randColor();
-    myCanvas2D.drawLine (x1, y1, x2, y2, c, randInt(1,10), endCaps[randInt(0,2)]);
+    const c  = isGrad() ? Utils.randGradient(myCanvas2D.cc, x1, y1, x2, y2) : Utils.randColor();
+    myCanvas2D.drawLine (x1, y1, x2, y2, c, Utils.randInt(1,10), myCanvas2D.endCaps[Utils.randInt(0,2)]);
   }
 }
 
 //--- test_drawRectangle ------------------------------------------------------
 
-function test_drawRectangle ()
+export function test_drawRectangle ()
 {
   // Reset this demo
   reset();
@@ -145,51 +125,58 @@ function test_drawRectangle ()
   {
     const x = rand2DWidth  ();
     const y = rand2DHeight ();
-    const w = randInt (1, myCanvas2D.cWidth - x);
-    const h = randInt (1, myCanvas2D.cHeight - y);
-    const c = isGrad() ? randGradient(x, y, x+w, y+h) : randColor();
-    myCanvas2D.drawRectangle (x, y, w, h, c, randBin() ? fill : randInt(1,10));
+    const w = Utils.randInt (1, myCanvas2D.cWidth - x);
+    const h = Utils.randInt (1, myCanvas2D.cHeight - y);
+    const c = isGrad() ? Utils.randGradient(myCanvas2D.cc, x, y, x+w, y+h) : Utils.randColor();
+    myCanvas2D.drawRectangle (x, y, w, h, c, Utils.randBin() ? myCanvas2D.fill : Utils.randInt(1,10));
   }
 }
 
 //--- test_drawPoly -----------------------------------------------------------
 
-function test_drawPoly ()
+export function test_drawPoly ()
 {
   // Reset this demo
   reset();
 
   // Draw it
-  vertices = [];
+  let vertices = [];
   for (let i=0; i<10; i++)
   {
-    numVertices = randInt(3,10);
+    const numVertices = Utils.randInt(3,10);
     vertices.length = 0;
     for (let j=0; j<numVertices; j++)
       vertices.push ({ x:rand2DWidth(), y:rand2DHeight() });
 
-    const c = isGrad() ? randGradient(vertices[0].x, vertices[0].y, vertices[1].x, vertices[1].y) : randColor();
-    const t = randBin() ? fill : randInt(1,10);
-    const j = joints[randInt(0,joints.length-1)];
-    myCanvas2D.drawPoly (vertices, c, t, j, randBin());
+    const c = isGrad() ? Utils.randGradient(myCanvas2D.cc, vertices[0].x, vertices[0].y, vertices[1].x, vertices[1].y) : Utils.randColor();
+    const t = Utils.randBin() ? myCanvas2D.fill : Utils.randInt(1,10);
+    const j = myCanvas2D.joints[Utils.randInt(0,myCanvas2D.joints.length-1)];
+    myCanvas2D.drawPoly (vertices, c, t, j, Utils.randBin());
   }
 }
 
 //--- test_drawEllipse --------------------------------------------------------
 
-function test_drawEllipse ()
+export function test_drawEllipse ()
 {
   // Reset this demo
   reset();
 
   // Draw it
   for (let i=0; i<50; i++)
-    myCanvas2D.drawEllipse (rand2DWidth(), rand2DHeight(), rand2DWidth()/4, rand2DHeight()/4, randColor(), randBin() ? fill : randInt(1,10), randAngle());
+  {
+    const x = rand2DWidth  ();
+    const y = rand2DHeight ();
+    const w = Utils.randInt (1, myCanvas2D.cWidth  - x) / 4;
+    const h = Utils.randInt (1, myCanvas2D.cHeight - y) / 4;
+    const c = isGrad() ? Utils.randGradient(myCanvas2D.cc, x, y, x+w, y+h) : Utils.randColor();
+    myCanvas2D.drawEllipse (x, y, w, h, c, Utils.randBin() ? myCanvas2D.fill : Utils.randInt(1,10), Utils.randAngle());
+  }
 }
 
 //--- test_drawArc ------------------------------------------------------------
 
-function test_drawArc ()
+export function test_drawArc ()
 {
   //Reset this demo
   reset();
@@ -199,11 +186,11 @@ function test_drawArc ()
   {
     const cx = rand2DWidth();
     const cy = rand2DHeight();
-    const r  = randInt(10,300);
-    const c  = isGrad() ? randGradient(cx, cy, cx+r, cy+r) : randColor();
-    const a1 = randAngle();
-    const a2 = randAngle();
-    const t  = randInt(0,50);
+    const r  = Utils.randInt(10,300);
+    const c  = isGrad() ? Utils.randGradient(myCanvas2D.cc, cx, cy, cx+r, cy+r) : Utils.randColor();
+    const a1 = Utils.randAngle();
+    const a2 = Utils.randAngle();
+    const t  = Utils.randInt(0,50);
 
     myCanvas2D.drawArc (cx, cy, r, c, a1, a2, t);
   }
@@ -211,18 +198,18 @@ function test_drawArc ()
 
 //--- test_drawCurve ----------------------------------------------------------
 
-function test_drawCurve ()
+export function test_drawCurve ()
 {
   //Reset this demo
   reset();
 
   for (let i=0; i<50; i++)
-    myCanvas2D.drawCurve (rand2DWidth(), rand2DHeight(), rand2DWidth(), rand2DHeight(), randColor(), randBin() ? "h":"v", randInt(1,10));
+    myCanvas2D.drawCurve (rand2DWidth(), rand2DHeight(), rand2DWidth(), rand2DHeight(), Utils.randColor(), Utils.randBin() ? "h":"v", Utils.randInt(1,10));
 }
 
 //--- test_drawPie ------------------------------------------------------------
 
-function test_drawPie ()
+export function test_drawPie ()
 {
   //Reset this demo
   reset();
@@ -232,10 +219,10 @@ function test_drawPie ()
   {
     const cx = rand2DWidth();
     const cy = rand2DHeight();
-    const r  = randInt(10,200);
-    const c  = isGrad() ? randGradient(cx, cy, cx+r, cy+r) : randColor();
-    const p1 = randInt(0, 360);
-    const p2 = randInt(0, 360);
+    const r  = Utils.randInt(10,200);
+    const c  = isGrad() ? Utils.randGradient(myCanvas2D.cc, cx, cy, cx+r, cy+r) : Utils.randColor();
+    const p1 = Utils.randInt(0, 360);
+    const p2 = Utils.randInt(0, 360);
 
     myCanvas2D.drawPie (cx, cy, r, c, p1, p2);
   }
@@ -243,28 +230,28 @@ function test_drawPie ()
 
 //--- test_adjustBrightness ---------------------------------------------------
 
-function test_adjustBrightness ()
+export function test_adjustBrightness ()
 {
   // Reset this demo
   reset();
 
   for (let x=20; x<myCanvas2D.cWidth-40; x+=40)
   {
-    const color = randColor();
+    const color = Utils.randColor();
 
     for (let y=20, amount=-90; amount<=90; y+=35, amount+=10)
-      myCanvas2D.drawRectangle (x, y, 30, 35, myCanvas2D.adjustBrightness (color, amount), fill);
+      myCanvas2D.drawRectangle (x, y, 30, 35, myCanvas2D.adjustBrightness (color, amount), myCanvas2D.fill);
   }
 }
 
 //--- test_shadows ------------------------------------------------------------
 
-function test_shadows ()
+export function test_shadows ()
 {
   // Reset this demo
   reset();
 
-  myCanvas2D.drawRectangle (0, 0, myCanvas2D.cWidth, myCanvas2D.cHeight, '#F0F0F0', fill);
+  myCanvas2D.drawRectangle (0, 0, myCanvas2D.cWidth, myCanvas2D.cHeight, '#F0F0F0', myCanvas2D.fill);
   myCanvas2D.drawText (10, 10, "Shadows work with rectangles, polygons, text and images.", 'black');
   myCanvas2D.drawText (10, 25, "Notice the shadow conforms to the shape of transparent PNG images.", 'black');
 
@@ -272,7 +259,7 @@ function test_shadows ()
   myCanvas2D.setShadow (10, 10, '#202020', 10);
 
   // Set some shadowed stuff
-  myCanvas2D.drawRectangle (100, 80, 300, 100, '#004080', fill);
+  myCanvas2D.drawRectangle (100, 80, 300, 100, '#004080', myCanvas2D.fill);
   myCanvas2D.drawPoly      ([{ x:100, y:250 }, { x:400, y:250 }, { x:250, y:450 }], '#004080');
 
   // Test if transparent PNG can cast a shadow according to its visible shape
@@ -285,7 +272,7 @@ function test_shadows ()
 
 //--- test_drawText -----------------------------------------------------------
 
-function test_drawText ()
+export function test_drawText ()
 {
   // Reset this demo
   reset();
@@ -295,14 +282,14 @@ function test_drawText ()
   // Draw it
   for (let i=0; i<100; i++)
   {
-    const font = randInt(5,50).toString() + "px Arial";  // 5px..50px
-    myCanvas2D.drawText (rand2DWidth(), rand2DHeight(), textSamples[randInt(0, textSamples.length-1)], randColor(), font);
+    const font = Utils.randInt(5,50).toString() + "px Arial";  // 5px..50px
+    myCanvas2D.drawText (rand2DWidth(), rand2DHeight(), textSamples[Utils.randInt(0, textSamples.length-1)], Utils.randColor(), font);
   }
 }
 
 //--- test_getTextSize --------------------------------------------------------
 
-function test_getTextSize ()
+export function test_getTextSize ()
 {
   // Reset this demo
   reset();
@@ -315,17 +302,17 @@ function test_getTextSize ()
   {
     const x    = rand2DWidth();
     const y    = rand2DHeight();
-    const font = randInt(5,50).toString() + "px Arial";  // 5px..50px
-    const text = textSamples[randInt(0, textSamples.length-1)];
+    const font = Utils.randInt(5,50).toString() + "px Arial";  // 5px..50px
+    const text = textSamples[Utils.randInt(0, textSamples.length-1)];
     const size = myCanvas2D.getTextSize (text, font);
-    myCanvas2D.drawText (x, y, text, randColor(), font);
+    myCanvas2D.drawText (x, y, text, Utils.randColor(), font);
     myCanvas2D.drawText (x, y+size.height+2, `(${size.width} x ${size.height})`, "#FFFFFF", standardFont);
   }
 }
 
 //--- test_getDrawBlock -----------------------------------------------------
 
-function test_getDrawBlock ()
+export function test_getDrawBlock ()
 {
   // Reset this demo
   reset();
@@ -340,15 +327,15 @@ function test_getDrawBlock ()
     else
     {
       // Draw it
-      for (i=0; i<20; i++)
-        myCanvas2D.drawBlock (randInt(0, 800), randInt(0, 500), imageBlock);
+      for (let i=0; i<20; i++)
+        myCanvas2D.drawBlock (Utils.randInt(0, 800), Utils.randInt(0, 500), imageBlock);
     }
   });
 }
 
 //--- test_drawImage ----------------------------------------------------------
 
-function test_drawImage ()
+export function test_drawImage ()
 {
   // Reset this demo
   reset();
@@ -363,12 +350,12 @@ function test_drawImage ()
   ];
 
   for (let i=0; i<10; i++)
-    myCanvas2D.drawImage (rand2DWidth()/2, rand2DHeight()/2, images[randInt(0,images.length-1)]);
+    myCanvas2D.drawImage (rand2DWidth()/2, rand2DHeight()/2, images[Utils.randInt(0,images.length-1)]);
 }
 
 //--- test_drawDraggable ----------------------------------------------------------
 
-function test_drawDraggable ()
+export function test_drawDraggable ()
 {
   // Reset this demo
   reset();
@@ -383,95 +370,95 @@ function test_drawDraggable ()
   });
 }
 
-function myDraggable (x, y)
+export function myDraggable (x, y)
 {
   console.info ('X:' + x + '  Y:' + y);
 }
 
-function myDraggableDone (x, y)
+export function myDraggableDone (x, y)
 {
   console.info ('Done: ' + x + ', ' + y);
 }
 
 //--- test_drawLinearScale ----------------------------------------------------
 
-function test_drawLinearScale ()
+export function test_drawLinearScale ()
 {
   // Reset this demo
   reset();
 
-  if (randInt(0, 1) == 0)
+  if (Utils.randInt(0, 1) == 0)
   {
     // Horizontal Tests
-    myCanvas2D.drawLinearScale (50,  80+70*0, 900, 20, ScaleOrientation.HorizTop   , randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (50,  80+70*1, 900, 20, ScaleOrientation.HorizTop   , randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (50,  80+70*2, 900, 20, ScaleOrientation.HorizTop   , randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (50,  80+70*3, 900, 20, ScaleOrientation.HorizTop   , randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (50, 100+70*4, 900, 20, ScaleOrientation.HorizBottom, randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (50, 100+70*5, 900, 20, ScaleOrientation.HorizBottom, randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (50, 100+70*6, 900, 20, ScaleOrientation.HorizBottom, randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (50, 100+70*7, 900, 20, ScaleOrientation.HorizBottom, randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (50, 100+70*8, 900, 20, ScaleOrientation.HorizBottom, randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
+    myCanvas2D.drawLinearScale (50,  80+70*0, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (50,  80+70*1, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (50,  80+70*2, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (50,  80+70*3, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (50, 100+70*4, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (50, 100+70*5, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (50, 100+70*6, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (50, 100+70*7, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (50, 100+70*8, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
   }
   else
   {
     // Vertical Tests
-    myCanvas2D.drawLinearScale (100+100*0, 700, 20, 650, ScaleOrientation.VertLeft , randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (100+100*1, 700, 20, 650, ScaleOrientation.VertLeft , randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (100+100*2, 700, 20, 650, ScaleOrientation.VertLeft , randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (100+100*3, 700, 20, 650, ScaleOrientation.VertLeft , randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (120+100*4, 700, 20, 650, ScaleOrientation.VertRight, randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (120+100*5, 700, 20, 650, ScaleOrientation.VertRight, randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (120+100*6, 700, 20, 650, ScaleOrientation.VertRight, randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (120+100*7, 700, 20, 650, ScaleOrientation.VertRight, randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
-    myCanvas2D.drawLinearScale (120+100*8, 700, 20, 650, ScaleOrientation.VertRight, randFloat(-100,100), randFloat(101,1000), "sec", randColor(), randColor());
+    myCanvas2D.drawLinearScale (100+100*0, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (100+100*1, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (100+100*2, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (100+100*3, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (120+100*4, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (120+100*5, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (120+100*6, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (120+100*7, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (120+100*8, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
   }
 }
 
 //--- test_drawLogScale ----------------------------------------------------
 
-function test_drawLogScale ()
+export function test_drawLogScale ()
 {
   // Reset this demo
   reset();
 
-  if (randInt(0, 1) == 0)
+  if (Utils.randInt(0, 1) == 0)
   {
     // Horizontal Tests
-    myCanvas2D.drawLogScale (50,  80+70*0, 900, 20, ScaleOrientation.HorizTop   , randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (50,  80+70*1, 900, 20, ScaleOrientation.HorizTop   , randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (50,  80+70*2, 900, 20, ScaleOrientation.HorizTop   , randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (50,  80+70*3, 900, 20, ScaleOrientation.HorizTop   , randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (50, 100+70*4, 900, 20, ScaleOrientation.HorizBottom, randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (50, 100+70*5, 900, 20, ScaleOrientation.HorizBottom, randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (50, 100+70*6, 900, 20, ScaleOrientation.HorizBottom, randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (50, 100+70*7, 900, 20, ScaleOrientation.HorizBottom, randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (50, 100+70*8, 900, 20, ScaleOrientation.HorizBottom, randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
+    myCanvas2D.drawLogScale (50,  80+70*0, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (50,  80+70*1, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (50,  80+70*2, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (50,  80+70*3, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (50, 100+70*4, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (50, 100+70*5, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (50, 100+70*6, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (50, 100+70*7, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (50, 100+70*8, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
   }
   else
   {
     // Vertical Tests
-    myCanvas2D.drawLogScale (100+100*0, 700, 20, 650, ScaleOrientation.VertLeft , randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (100+100*1, 700, 20, 650, ScaleOrientation.VertLeft , randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (100+100*2, 700, 20, 650, ScaleOrientation.VertLeft , randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (100+100*3, 700, 20, 650, ScaleOrientation.VertLeft , randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (120+100*4, 700, 20, 650, ScaleOrientation.VertRight, randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (120+100*5, 700, 20, 650, ScaleOrientation.VertRight, randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (120+100*6, 700, 20, 650, ScaleOrientation.VertRight, randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (120+100*7, 700, 20, 650, ScaleOrientation.VertRight, randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
-    myCanvas2D.drawLogScale (120+100*8, 700, 20, 650, ScaleOrientation.VertRight, randFloat(1,100), randFloat(101,1000000), "Hz", randColor(), randColor());
+    myCanvas2D.drawLogScale (100+100*0, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (100+100*1, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (100+100*2, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (100+100*3, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (120+100*4, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (120+100*5, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (120+100*6, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (120+100*7, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (120+100*8, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
   }
 }
 
 //--- test_drawCircularScale --------------------------------------------------
 
-function test_drawCircularScale ()
+export function test_drawCircularScale ()
 {
   // Reset this demo
   reset();
 
-  myCanvas2D.drawCircularScale (300, ccy, randInt(50, 250), randFloat(-400, 200), randFloat(201, 5000), randInt(-180, 0), randInt(1, 180), "°K", randColor());
-  myCanvas2D.drawCircularScale (700, ccy, randInt(50, 250), randFloat(-400, 200), randFloat(201, 5000), randInt(-180, 0), randInt(1, 180), "°K", randColor());
+  myCanvas2D.drawCircularScale (300, ccy, Utils.randInt(50, 250), Utils.randFloat(-400, 200), Utils.randFloat(201, 5000), Utils.randInt(-180, 0), Utils.randInt(1, 180), "°K", Utils.randColor());
+  myCanvas2D.drawCircularScale (700, ccy, Utils.randInt(50, 250), Utils.randFloat(-400, 200), Utils.randFloat(201, 5000), Utils.randInt(-180, 0), Utils.randInt(1, 180), "°K", Utils.randColor());
 }
 
 
@@ -481,7 +468,7 @@ function test_drawCircularScale ()
 
 //--- test_Burst ------------------------------------------------------------
 
-function test_Burst ()
+export function test_Burst ()
 {
   // Reset this demo
   reset();
@@ -491,22 +478,23 @@ function test_Burst ()
 
   // Draw it
   for (let i=0; i<500; i++)
-    myCanvas2D.drawLine (cx, cy, rand2DWidth(), rand2DHeight(), randColor());
+    myCanvas2D.drawLine (cx, cy, rand2DWidth(), rand2DHeight(), Utils.randColor());
 }
 
 //--- test_Web1 --------------------------------------------------------------
 
-function test_Web1 ()
+export function test_Web1 ()
 {
   // Reset this demo
   reset();
 
   // Corner Web
-  step = randInt (5, 15);
-  yFactor = myCanvas2D.cHeight / myCanvas2D.cWidth;
-  for (x=0; x<myCanvas2D.cWidth; x+=step)
+  let step    = Utils.randInt (5, 15);
+  let yFactor = myCanvas2D.cHeight / myCanvas2D.cWidth;
+
+  for (let x=0; x<myCanvas2D.cWidth; x+=step)
   {
-    y = x * yFactor;
+    let y = x * yFactor;
 
     myCanvas2D.drawPoly (
     [
@@ -514,23 +502,23 @@ function test_Web1 ()
       { x : 0                    , y : y                      },
       { x : myCanvas2D.cWidth - x, y : 0                      },
       { x : myCanvas2D.cWidth    , y : myCanvas2D.cHeight - y }
-    ], randColor());
+    ], Utils.randColor());
   }
 
   // Ellipse Web
-  cx   = myCanvas2D.cWidth  / 2;
-  cy   = myCanvas2D.cHeight / 2;
-  rx   = rand2DWidth ()     / 2;
-  ry   = rand2DHeight()     / 2;
-  step = randFloat (2, 5);
+  let cx = myCanvas2D.cWidth  / 2;
+  let cy = myCanvas2D.cHeight / 2;
+  let rx = rand2DWidth ()     / 2;
+  let ry = rand2DHeight()     / 2;
 
-  for (rot=-180; rot<180; rot+=step)
-    myCanvas2D.drawEllipse (cx, cy, rx, ry, randColor(), 1, rot);
+  step = Utils.randFloat (2, 5);
+  for (let rot=-180; rot<180; rot+=step)
+    myCanvas2D.drawEllipse (cx, cy, rx, ry, Utils.randColor(), 1, rot);
 }
 
 //--- test_Web2 --------------------------------------------------------------
 
-function test_Web2 ()
+export function test_Web2 ()
 {
   // Reset this demo
   reset();
@@ -538,22 +526,22 @@ function test_Web2 ()
   const cx = myCanvas2D.cWidth /2;
   const cy = myCanvas2D.cHeight/2;
 
-  rotStep = randFloat (1, 10);
-  for (rot=0; rot<180; rot+=rotStep)
+  let rotStep = Utils.randFloat (1, 10);
+  for (let rot=0; rot<180; rot+=rotStep)
   {
-    radStep = 20 * Math.random() + 10;  // 10...30
-    yFactor = myCanvas2D.cHeight / myCanvas2D.cWidth;
-    for (rx=0; rx<myCanvas2D.cWidth/2; rx+=radStep)
+    let radStep = Utils.randFloat(10, 30);
+    let yFactor = myCanvas2D.cHeight / myCanvas2D.cWidth;
+    for (let rx=0; rx<myCanvas2D.cWidth/2; rx+=radStep)
     {
-      ry = myCanvas2D.cHeight/2 - (rx * yFactor);
-      myCanvas2D.drawEllipse (cx, cy, rx, ry, randColor(), 1, rot);
+      let ry = myCanvas2D.cHeight/2 - (rx * yFactor);
+      myCanvas2D.drawEllipse (cx, cy, rx, ry, Utils.randColor(), 1, rot);
     }
   }
 }
 
 //--- test_FractalTree ------------------------------------------------------
 
-function test_FractalTree ()
+export function test_FractalTree ()
 {
   // Reset this demo
   reset();
@@ -565,7 +553,7 @@ function test_FractalTree ()
     myCanvas2D.cc.beginPath();
     myCanvas2D.cc.save();
 
-    myCanvas2D.cc.strokeStyle = randColor();
+    myCanvas2D.cc.strokeStyle = Utils.randColor();
 
     myCanvas2D.cc.translate(startX, startY);
     myCanvas2D.cc.rotate(angle * Math.PI/180);
@@ -579,7 +567,7 @@ function test_FractalTree ()
       return;
     }
 
-    angleStep = randFloat (5, 30);
+    let angleStep = Utils.randFloat (5, 30);
     drawBranch(0, -len, len*0.8, angle-angleStep, branchWidth*0.7);  // -15
     drawBranch(0, -len, len*0.8, angle+angleStep, branchWidth*0.7);  // +15
 
@@ -591,7 +579,7 @@ function test_FractalTree ()
 
 //--- test_Mandelbrot -------------------------------------------------------
 
-function test_Mandelbrot ()
+export function test_Mandelbrot ()
 {
   // Reset this demo
   reset();
@@ -629,14 +617,14 @@ function test_Mandelbrot ()
 
   let canvasData = myCanvas2D.getBlock (0, 0, myCanvas2D.cWidth, myCanvas2D.cHeight);
 
-  width  = 5 * Math.random() + 1.0;  // 3.5;
-  height = 3 * Math.random() + 0.5;  // 2;
+  const width  = Utils.randFloat (1.0, 6.0);
+  const height = Utils.randFloat (0.5, 3.0);
 
-  xoffset=0; yoffset=0;
+  let xoffset=0, yoffset=0;
 
-  for (px=0; px < myCanvas2D.cWidth; px++)
+  for (let px=0; px < myCanvas2D.cWidth; px++)
   {
-    for (py=0; py < myCanvas2D.cHeight; py++)
+    for (let py=0; py < myCanvas2D.cHeight; py++)
     {
       let x0       = (px / myCanvas2D.cWidth ) * width  + (xoffset - 2.5);
       let y0       = (py / myCanvas2D.cHeight) * height + (yoffset - 1.0);
@@ -663,67 +651,70 @@ function test_Mandelbrot ()
 
 //--- test_Snake ------------------------------------------------------------
 
-function test_Snake ()
+export function test_Snake ()
 {
   // Reset this demo
   reset();
 
   // Draw it
-  x = myCanvas2D.cWidth/2;
-  y = myCanvas2D.cHeight/2;
+  let x = myCanvas2D.cWidth/2;
+  let y = myCanvas2D.cHeight/2;
 
-  interval = setInterval (() =>
+  interval2D = setInterval (() =>
   {
-    xRad = 20 * Math.random() + 10;
-    yRad = 20 * Math.random() + 10;
+    const xRad = Utils.randInt (10, 30);
+    const yRad = Utils.randInt (10, 30);
 
-    myCanvas2D.drawEllipse (x, y, xRad, yRad, randColor());
+    myCanvas2D.drawEllipse (x, y, xRad, yRad, Utils.randColor());
 
-    xStep = randInt (10, 20);
-    yStep = randInt ( 8, 16);
+    const xStep = Utils.randInt (10, 20);
+    const yStep = Utils.randInt ( 8, 16);
 
-    if (randInt(0,1) > 0) x += xStep; else x -= xStep;
-    if (randInt(0,1) > 0) y += yStep; else y -= yStep;
+    if (Utils.randBin ()) x += xStep; else x -= xStep;
+    if (Utils.randBin ()) y += yStep; else y -= yStep;
 
          if (x > myCanvas2D.cWidth ) x = myCanvas2D.cWidth;
-    else if (x < 0               ) x = 0;
+    else if (x < 0                 ) x = 0;
 
          if (y > myCanvas2D.cHeight) y = myCanvas2D.cHeight;
-    else if (y < 0               ) y = 0;
+    else if (y < 0                 ) y = 0;
   },
   17);
 }
 
 //--- test_PolyBounce -------------------------------------------------------
 
-function test_PolyBounce ()
+export function test_PolyBounce ()
 {
   // Reset this demo
   reset();
 
-  points = [];
-  xStep  = [];
-  yStep  = [];
+  let points = [];
+  let xStep  = [];
+  let yStep  = [];
 
-  numPoints = randInt (10, 50);
+  const numPoints = Utils.randInt (10, 50);
 
   // Init points and steps
   for (let i=0; i<numPoints; i++)
   {
     points.push ({ x : rand2DWidth(), y : rand2DHeight() });
-    xStep .push (randInt(2,7) * (randInt(0,1) > 0 ? 1 : -1));
-    yStep .push (randInt(2,7) * (randInt(0,1) > 0 ? 1 : -1));
+    xStep .push (Utils.randInt(2,7) * (Utils.randBin() ? 1 : -1));
+    yStep .push (Utils.randInt(2,7) * (Utils.randBin() ? 1 : -1));
   }
 
-  const color = randColor();
+  const maxX      = myCanvas2D.cWidth  - 1;
+  const maxY      = myCanvas2D.cHeight - 1;
+  const color     = Utils.randColor();
+  const thickness = Utils.randInt (1, 10);
 
-  interval = setInterval (() =>
+  interval2D = setInterval (() =>
   {
     // Clear canvas
     myCanvas2D.clear();
 
     // Draw all lines
-    myCanvas2D.drawPoly (points, color, 1, true);
+    myCanvas2D.drawPoly (points, color, thickness, true);
 
     // Move all vertices
     for (let i=0; i<numPoints; i++)
@@ -731,12 +722,51 @@ function test_PolyBounce ()
       points[i].x += xStep[i];
       points[i].y += yStep[i];
 
-           if (points[i].x > myCanvas2D.cWidth ) { points[i].x = myCanvas2D.cWidth ; xStep[i] *= -1; }
-      else if (points[i].x < 0                 ) { points[i].x = 0                 ; xStep[i] *= -1; }
+           if (points[i].x > maxX) { points[i].x = maxX; xStep[i] *= -1; }
+      else if (points[i].x < 0   ) { points[i].x = 0   ; xStep[i] *= -1; }
 
-           if (points[i].y > myCanvas2D.cHeight) { points[i].y = myCanvas2D.cHeight; yStep[i] *= -1; }
-      else if (points[i].y < 0                 ) { points[i].y = 0                 ; yStep[i] *= -1; }
+           if (points[i].y > maxY) { points[i].y = maxY; yStep[i] *= -1; }
+      else if (points[i].y < 0   ) { points[i].y = 0   ; yStep[i] *= -1; }
     }
-  },
-  17);
+  }, 33);  // ~30fps
 }
+
+//--- test_Tunnel -----------------------------------------------------------
+
+export function test_Tunnel ()
+{
+  let    rings    = [];
+  const  maxRings = 40;
+  const  speed    = 5;
+
+  // Reset this demo
+  reset ();
+
+  for (let i=0; i<maxRings; i++)
+    rings.push ({ z: i * 100, color: Utils.randColor() });
+
+  interval2D = setInterval (() =>
+  {
+    myCanvas2D.clear ();
+
+    for (let ring of rings)
+    {
+      const perspective = 500 / ring.z;
+      const radius = perspective * 200;
+
+      myCanvas2D.drawEllipse (ccx, ccy, radius, radius, ring.color, 3*perspective);
+
+      ring.z -= speed;
+      if (ring.z <= 0)
+      {
+        ring.z = maxRings * 100;
+        ring.color = Utils.randColor();
+      }
+    }
+  }, 33);  // ~30fps
+}
+
+
+// Add more from here:
+// https://webdesign.tutsplus.com/21-ridiculously-impressive-html5-canvas-experiments--net-14210a
+

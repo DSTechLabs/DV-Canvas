@@ -5,7 +5,7 @@
 //  PROJECT : Common Web App Functions
 //
 //   AUTHOR : Bill Daniels
-//            Copyright 2009-2025, D+S Tech Labs, Inc.
+//            Copyright 2009-2026, D+S Tech Labs, Inc.
 //            All Rights Reserved
 //
 //=========================================================
@@ -174,6 +174,21 @@ function GetTimestamp (newDate, format)
   }
 
   return '';
+}
+
+//--- Delay -----------------------------------------------
+// Use with await
+
+function Delay (ms)
+{
+  try
+  {
+    return new Promise (resolve => setTimeout (resolve, ms));
+  }
+  catch (ex)
+  {
+    ShowException (ex);
+  }
 }
 
 //--- GetDayName ------------------------------------------
@@ -655,7 +670,7 @@ function PopupBubble (event, htmlMessage, fadeOut)
     RemoveBubble ();
 
     let x, y, popup;
-    if (event == undefined)
+    if (!(event instanceof MouseEvent))
     {
       x = (GetBrowserWidth ()/2                        ).toString() + 'px';
       y = (GetBrowserHeight()/2 + $(window).scrollTop()).toString() + 'px';
@@ -686,7 +701,7 @@ function PopupBubble (event, htmlMessage, fadeOut)
     {
       setTimeout (() =>
       {
-        $('#screenBubble').fadeOut (1000, () => { RemoveBubble(); });
+        $('#screenBubble').fadeOut (2000, () => { RemoveBubble(); });
       }, fadeOut);
     }
   }

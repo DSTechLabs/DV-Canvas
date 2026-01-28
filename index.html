@@ -3,10 +3,10 @@
 //
 //     FILE : index.html
 //
-//  PROJECT : 2D & 3D Data Visualization Testing
+//  PROJECT : 2D & 3D Data Visualization Canvas Testing
 //
 //   AUTHOR : Bill Daniels
-//            Copyright 2023, D+S Tech Labs, Inc.
+//            Copyright 2023-2026, D+S Tech Labs, Inc.
 //            All Rights Reserved
 //
 //======================================================-->
@@ -26,9 +26,9 @@
     <meta name="keywords"    content="3D,Visualization,threejs,three.js" />
     <meta name="description" content="D+S Tech Labs is a collection of work and products in the fields of High-End Audio Speakers, Software, Web Apps, Robotics, CNC Machines, Telescopes and more ..." />
     <meta name="author"      content="D+S Tech Labs, Inc." />
-    <meta name="copyright"   content="&copy; 2023, D+S Tech Labs, Inc." />
+    <meta name="copyright"   content="&copy; 2023-2026, D+S Tech Labs, Inc." />
 
-    <title>dvCanvas2D / dvCanvas3D</title>
+    <title>DVCanvas2D / DVCanvas3D</title>
 
     <!-- Common Styles -->
     <link rel="stylesheet" href="dsStyles.css" />
@@ -65,18 +65,9 @@
 
     </style>
 
-    <!-- Load Scripts -->
+    <!-- Load JS Helper Scripts -->
     <script src="jquery-3.6.0.min.js"></script>
     <script src="dsExtras.js"></script>
-
-    <script type="importmap">
-      {
-        "imports" :
-        {
-          "three" : "https://unpkg.com/three@0.165.0/build/three.module.min.js"
-        }
-      }
-    </script>
 
   </head>
 
@@ -88,19 +79,19 @@
     <div id="modalBackdrop"></div>
     <br>
 
-    <div class="dsTitle"><small>dvCanvas-2D &amp; dvCanvas-3D</small></div>
+    <div class="dsTitle"><small>DVCanvas-2D &amp; DVCanvas-3D</small></div>
     <br>
 
 
     <!--================================================-->
-    <!--  dvCanvas2D                                    -->
+    <!--  DVCanvas2D                                    -->
     <!--================================================-->
 
     <!-- Button Menu -->
-    <div style="display:inline-block; vertical-align:top">
+    <div class="dsBlock">
 
-      <div style="margin-bottom:5px; font-size:xx-large">dvCanvas2D</div>
-      <button class="demoButton" onclick="test_TestBounds        ()"> Test Bounds       </button><br>
+      <div style="margin-bottom:5px; font-size:xx-large">DVCanvas2D</div>
+      <button class="demoButton" onclick="Tester2D.test_TestBounds        ()"> Test Bounds       </button><br>
       <br>
 
       <label><input id="cb_transparent" type="checkbox" />Transparent</label>
@@ -108,90 +99,122 @@
       <label><input id="cb_gradient"    type="checkbox" />Gradient</label><br>
       <br>
 
-      <button class="demoButton" onclick="test_drawPixel         ()"> drawPixel         </button><br>
-      <button class="demoButton" onclick="test_drawPoint         ()"> drawPoint         </button><br>
-      <button class="demoButton" onclick="test_drawLine          ()"> drawLine          </button><br>
-      <button class="demoButton" onclick="test_drawRectangle     ()"> drawRectangle     </button><br>
-      <button class="demoButton" onclick="test_drawPoly          ()"> drawPoly          </button><br><br>
+      <button class="demoButton" onclick="Tester2D.test_drawPixel         ()"> drawPixel         </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawPoint         ()"> drawPoint         </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawLine          ()"> drawLine          </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawRectangle     ()"> drawRectangle     </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawPoly          ()"> drawPoly          </button><br><br>
 
-      <button class="demoButton" onclick="test_drawEllipse       ()"> drawEllipse       </button><br>
-      <button class="demoButton" onclick="test_drawArc           ()"> drawArc           </button><br>
-      <button class="demoButton" onclick="test_drawCurve         ()"> drawCurve         </button><br>
-      <button class="demoButton" onclick="test_drawPie           ()"> drawPie           </button><br><br>
+      <button class="demoButton" onclick="Tester2D.test_drawEllipse       ()"> drawEllipse       </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawArc           ()"> drawArc           </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawCurve         ()"> drawCurve         </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawPie           ()"> drawPie           </button><br><br>
 
-      <button class="demoButton" onclick="test_adjustBrightness  ()"> adjustBrightness  </button><br>
-      <button class="demoButton" onclick="test_shadows           ()"> shadows           </button><br><br>
+      <button class="demoButton" onclick="Tester2D.test_adjustBrightness  ()"> adjustBrightness  </button><br>
+      <button class="demoButton" onclick="Tester2D.test_shadows           ()"> shadows           </button><br><br>
 
-      <button class="demoButton" onclick="test_drawText          ()"> drawText          </button><br>
-      <button class="demoButton" onclick="test_getTextSize       ()"> getTextSize       </button><br><br>
+      <button class="demoButton" onclick="Tester2D.test_drawText          ()"> drawText          </button><br>
+      <button class="demoButton" onclick="Tester2D.test_getTextSize       ()"> getTextSize       </button><br><br>
 
-      <button class="demoButton" onclick="test_getDrawBlock      ()"> get/drawBlock     </button><br>
-      <button class="demoButton" onclick="test_drawImage         ()"> drawImage         </button><br>
-      <button class="demoButton" onclick="test_drawDraggable     ()"> drawDraggable     </button><br><br>
+      <button class="demoButton" onclick="Tester2D.test_getDrawBlock      ()"> get/drawBlock     </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawImage         ()"> drawImage         </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawDraggable     ()"> drawDraggable     </button><br><br>
 
-      <button class="demoButton" onclick="test_drawLinearScale   ()"> drawLinearScale   </button><br>
-      <button class="demoButton" onclick="test_drawLogScale      ()"> drawLogScale      </button><br>
-      <button class="demoButton" onclick="test_drawCircularScale ()"> drawCircularScale </button><br><br>
-
-    </div>
-
-    <div style="display:inline-block; margin-left:20px; vertical-align:top">
-
-      <div style="margin-bottom:5px; font-size:xx-large">Examples</div>
-      <button class="demoButton" onclick="test_Burst       ()"> Burst        </button><br>
-      <button class="demoButton" onclick="test_Web1        ()"> Web 1        </button><br>
-      <button class="demoButton" onclick="test_Web2        ()"> Web 2        </button><br>
-      <button class="demoButton" onclick="test_FractalTree ()"> FractalTree  </button><br>
-      <button class="demoButton" onclick="test_Mandelbrot  ()"> Mandelbrot   </button><br>
-      <button class="demoButton" onclick="test_Snake       ()"> Snake        </button><br>
-      <button class="demoButton" onclick="test_PolyBounce  ()"> Poly Bounce  </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawLinearScale   ()"> drawLinearScale   </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawLogScale      ()"> drawLogScale      </button><br>
+      <button class="demoButton" onclick="Tester2D.test_drawCircularScale ()"> drawCircularScale </button><br><br>
 
     </div>
 
-    <div id="canvas2Ddiv" style="display:inline-block; margin-left:40px; vertical-align:top"></div><br>
+    <div class="dsBlock" style="margin-left:20px">
+
+      <div style="margin-bottom:5px; font-size:xx-large">2D Examples</div>
+      <button class="demoButton" onclick="Tester2D.test_Burst       ()"> Burst        </button><br>
+      <button class="demoButton" onclick="Tester2D.test_Web1        ()"> Web 1        </button><br>
+      <button class="demoButton" onclick="Tester2D.test_Web2        ()"> Web 2        </button><br>
+      <button class="demoButton" onclick="Tester2D.test_FractalTree ()"> FractalTree  </button><br>
+      <button class="demoButton" onclick="Tester2D.test_Mandelbrot  ()"> Mandelbrot   </button><br>
+      <button class="demoButton" onclick="Tester2D.test_Snake       ()"> Snake        </button><br>
+      <button class="demoButton" onclick="Tester2D.test_PolyBounce  ()"> Poly Bounce  </button><br>
+      <button class="demoButton" onclick="Tester2D.test_Tunnel      ()"> Tunnel       </button><br>
+
+    </div>
+
+    <!-- DVCanvas2D Element -->
+    <canvas id="canvas2D" width="1024" height="768" style="margin-left:30px; vertical-align:top              ; border:1px solid #00FF00              "></canvas><br>
     <br>
     <br>
     <br>
 
 
     <!--================================================-->
-    <!--  dvCanvas3D                                    -->
+    <!--  DVCanvas3D                                    -->
     <!--================================================-->
 
     <!-- Button Menu -->
-    <div style="display:inline-block; vertical-align:top">
+    <div class="dsBlock">
 
-      <div style="margin-bottom:5px; font-size:xx-large">dvCanvas3D</div>
-      <button class="demoButton" onclick="canvas3D_Cube  ()"> Cube  </button><br>
-      <button class="demoButton" onclick="canvas3D_Wave  ()"> Wave  </button><br>
-      <button class="demoButton" onclick="canvas3D_Pivot ()"> Pivot </button><br>
+      <div style="margin-bottom:5px; font-size:xx-large">DVCanvas3D</div>
+
+      <label><input id="cb_axes"  type="checkbox" /> Show Axes  </label><br>
+      <label><input id="cb_grid"  type="checkbox" /> Show Grid  </label><br>
+      <label><input id="cb_floor" type="checkbox" /> Show Floor </label><br>
+      <br>
+
+      <button class="demoButton" onclick="Tester3D.test_Points ()"> Points </button><br>
+      <button class="demoButton" onclick="Tester3D.test_Lines  ()"> Lines  </button><br>
+      <button class="demoButton" onclick="Tester3D.test_Planes ()"> Planes </button><br>
+      <button class="demoButton" onclick="Tester3D.test_Boxes  ()"> Boxes  </button><br>
 
     </div>
 
-    <canvas id="canvas3D" width="1024" height="768" style="margin-left:40px; vertical-align:top; background-color:#000000"></canvas><br>
+    <div class="dsBlock" style="margin-left:20px">
+
+      <div style="margin-bottom:5px; font-size:xx-large">3D Examples</div>
+      <button class="demoButton" onclick="Tester3D.test_Cube3D ()"> Cube   </button><br>
+      <button class="demoButton" onclick="Tester3D.test_Wave3D ()"> Wave   </button><br>
+      <button class="demoButton" onclick="Tester3D.test_Lidar  ()"> Lidar  </button><br>
+      <button class="demoButton" onclick="Tester3D.test_Cosmic ()"> Cosmic </button><br>
+
+    </div>
+
+    <!-- Provide the 3D Canvas -->
+    <canvas id="canvas3D" width="1024" height="768" style="margin-left:30px; vertical-align:top              ; border:1px solid #00FF00              "></canvas><br>
     <br>
     <br>
     <br>
 
 
-    <!-- Load scripts -->
-    <script src="dvCanvas2D.js"></script>
-    <script src="dvCanvas2D_Test.js"></script>
+    <!--================================================-->
+    <!--  Modules and Three.JS                          -->
+    <!--================================================-->
 
-
-
-
-
-    <script type="module" src="./dvCanvas3D_Test.js?r=Math.random()"></script>
-    <script type="module">
-      import { canvas3D_Cube  } from "./dvCanvas3D_Test.js"; window.canvas3D_Cube  = canvas3D_Cube;
-      import { canvas3D_Wave  } from "./dvCanvas3D_Test.js"; window.canvas3D_Wave  = canvas3D_Wave;
-      import { canvas3D_Pivot } from "./dvCanvas3D_Test.js"; window.canvas3D_Pivot = canvas3D_Pivot;
+    <!-- Import Map -->
+    <script type="importmap">
+      {
+        "imports" :
+        {
+          "three"         : "./three.js",
+          "three/addons/" : "./"
+        }
+      }
     </script>
 
+    <!-- Load App Modules -->
+    <script type="module">
+      import * as Utils from "./utils.js";
+      window.Utils = Utils;
+    </script>
 
+    <script type="module">
+      import * as Tester2D from "./DVCanvas2D_Test.js";
+      window.Tester2D = Tester2D;
+    </script>
 
-
+    <script type="module">
+      import * as Tester3D from "./DVCanvas3D_Test.js";
+      window.Tester3D = Tester3D;
+    </script>
 
   </body>
 
