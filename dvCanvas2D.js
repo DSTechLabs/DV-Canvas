@@ -34,8 +34,8 @@ export class DVCanvas2D
   twopi   = 2 * this.pi;
   piOver2 = this.pi / 2;
   deg2rad = this.pi / 180;
-  endCaps = [ "butt", "round", "square" ];
-  joints  = [ "round", "bevel", "miter" ];
+  endCaps = [ 'butt', 'round', 'square' ];
+  joints  = [ 'round', 'bevel', 'miter' ];
 
   //--- Scale Orientations (enum) ---
   ScaleOrientation = Object.freeze
@@ -58,17 +58,18 @@ export class DVCanvas2D
   dragY      = 0;            // current draggable location
 
   //--- Constructor ---------------------------------------
-  constructor (canvasElementID)
+  constructor (width, height, backColor)
   {
     try
     {
-      // Get provided canvas element
-      this.canvas    = document.getElementById (canvasElementID);  // Must have width and height attributes set in the HTML
-      this.cWidth    = this.canvas.getAttribute ("width" );
-      this.cHeight   = this.canvas.getAttribute ("height");
-      this.backColor = this.canvas.style.backgroundColor;
-      if (this.backColor == undefined || this.backColor == null)
-        this.backColor = '#000000';
+      // Create the canvas element
+      this.canvas = document.createElement ('canvas');
+      this.resize (width, height);
+
+      if (backColor == undefined || backColor == null)
+        this.backColor = this.canvas.backColor = '#000000';
+      else
+        this.backColor = this.canvas.backColor = backColor;
 
       this.canvas.style.userSelect = 'none';
 
@@ -1105,9 +1106,9 @@ export class DVCanvas2D
       if (startAngle == stopAngle)
         return;
 
-      // //--- For debugging -----------------------------------------------
-      // this.drawPie (cx, cy, radius, randColor(), startAngle, stopAngle);
-      // //-----------------------------------------------------------------
+      // //--- For debugging --------------------------------------------------
+      // this.drawPie (cx, cy, radius, randColorCSS(), startAngle, stopAngle);
+      // //--------------------------------------------------------------------
 
       const startRad    = (startAngle - 90) * this.deg2rad;
       const stopRad     = (stopAngle  - 90) * this.deg2rad;

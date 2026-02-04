@@ -21,8 +21,8 @@
 //=========================================================
 
 //--- Load Three.js for WebGL 3D Stuff ---
-import * as THREE from "three";                                       // "https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js";
-import { OrbitControls } from "three/addons/three.orbitControls.js";  // "https://cdn.jsdelivr.net/npm/three@0.182.0/examples/jsm/controls/OrbitControls.js";
+import * as THREE from './three.js';                       // 'https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js';
+import { OrbitControls } from './three.orbitControls.js';  // 'https://cdn.jsdelivr.net/npm/three@0.182.0/examples/jsm/controls/OrbitControls.js';
 
 
 //=========================================================
@@ -33,86 +33,79 @@ export class DVCanvas3D
 {
   //--- Public properties ---------------------------------
   threejs       = THREE;
-  canvas3D      = undefined;
+  canvas        = undefined;
   renderer      = undefined;
   scene         = undefined;
   camera        = undefined;
-  light         = undefined;
+  ambLight      = undefined;  // ambient light
+  dirLight      = undefined;  // directional light
   floor         = undefined;
   axes          = undefined;
   orbitControls = undefined;
 
   //--- Constructor ---------------------------------------
 
-  constructor (canvasElementID)
+  constructor (width, height, backColor)
   {
     try
     {
-      // Get provided canvas element
-      this.canvas3D = document.getElementById (canvasElementID);  // Must have width and height attributes set in the HTML
-      const cWidth  = this.canvas3D.getAttribute ("width" );
-      const cHeight = this.canvas3D.getAttribute ("height");
+      // Create the canvas element
+      this.canvas = document.createElement ('canvas');
+      this.canvas.width  = width;
+      this.canvas.height = height;
+
+      if (backColor == undefined || backColor == null)
+        this.canvas.backColor = '#000000';
+      else
+        this.canvas.backColor = backColor;
 
       // Create WebGL Renderer for the canvas element
-      // this.canvas3D = document.getElementById (canvasElementID);
-      this.renderer = new THREE.WebGLRenderer ({ canvas:this.canvas3D, antialias:true });
-      this.renderer.setSize (cWidth, cHeight);
+      this.renderer = new THREE.WebGLRenderer ({ canvas:this.canvas, antialias:true });
+      this.renderer.setSize (width, height);
       this.renderer.shadowMap.enabled = true;
 
       // Create Scene and Camera
       this.scene  = new THREE.Scene ();
-      this.camera = new THREE.PerspectiveCamera (60, this.canvas3D.width / this.canvas3D.height, 0.1, 50);  // (fov, aspect ratio, near, far)
+      this.camera = new THREE.PerspectiveCamera (60, width/height, 0.1, 50);  // (fov, aspect ratio, near, far)
       this.camera.position.set (0, 2, 5);  // x, z, y
 
-
-      // // Ambient Light
-      // this.light = new THREE.AmbientLight ();
-
-
-      // // Point Light
-      // this.light = new THREE.PointLight (0xFFFFFF, 1000);
-      // this.light.position.set (5, 10, 10);
-      // this.light.castShadow = true;
-
+      // Ambient Light
+      this.ambLight = new THREE.AmbientLight (0xFFFFFF, 0.2);
+      this.scene.add (this.ambLight);
 
       // Directional Light
-      this.light = new THREE.DirectionalLight (0xFFFFFF, 2);
-      this.light.position.set (5, 10, 10);
-      this.light.castShadow = true;
+      this.dirLight = new THREE.DirectionalLight (0xFFFFFF, 2.0);
+      this.dirLight.position.set (5, 10, 10);
+      this.dirLight.castShadow = true;
 
       // // Shadow tweeking
-      // this.light.shadowBias      = 0.0001;
-      // this.light.shadowDarkness  = 0.2;
-      // this.light.shadowMapWidth  = 2048;
-      // this.light.shadowMapHeight = 2048;
-      this.scene.add (this.light);
-
+      // this.dirLight.shadowBias      = 0.0001;
+      // this.dirLight.shadowDarkness  = 0.2;
+      // this.dirLight.shadowMapWidth  = 2048;
+      // this.dirLight.shadowMapHeight = 2048;
+      this.scene.add (this.dirLight);
 
       // Axes
       this.axes = new THREE.AxesHelper (3);
       this.axes.visible = false;
       this.scene.add (this.axes);
 
-
       // Grid
       this.grid = new THREE.GridHelper (20, 20);
       this.grid.visible = false;
       this.scene.add (this.grid);
 
-
       // Floor (Ground Plane)
       this.floor = this.addPlane (0, 0, 0, 20, 20, -Math.PI/2);
       this.floor.visible = false;
 
-
       // Add-ons
-      this.orbitControls = new OrbitControls (this.camera, this.renderer.domElement);
+      this.orbitControls = new OrbitControls (this.camera, this.canvas);
       // const gltfLoader = new GLTFLoader();
 
 
       // First render
       this.render ();
-
 
       // Only render when camera moves
       this.orbitControls.addEventListener ('change', () => { this.render(); });
@@ -171,8 +164,8 @@ export class DVCanvas3D
   {
     try
     {
-      // Remove all objects except the first four(4) (Light, Axes, Grid and Floor)
-      for (let i=this.scene.children.length-1; i>3; i--)
+      // Remove all objects except the first five(5) (2 lights, axes, grid and floor)
+      for (let i=this.scene.children.length-1; i>=5; i--)
         this.removeObject (this.scene.children[i]);
     }
     catch (ex)

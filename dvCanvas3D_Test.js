@@ -12,19 +12,23 @@
 
 //--- Imports ---------------------------------------------
 
-import { DVCanvas3D } from "./DVCanvas3D.js"
+import { DVCanvas3D } from './DVCanvas3D.js'
+import * as Utils from './utils.js';
 
 //--- Globals ---------------------------------------------
 
-// Create a DVCanvas3D object
-const myCanvas3D = new DVCanvas3D ("canvas3D");
+// Create a DVCanvas2D object
+const myCanvas3D = new DVCanvas3D (1024, 768, 'black');
+
+// Add its canvas element to the placeholder div
+$('#canvas3D').append (myCanvas3D.canvas);
 
 
 //--- Event Handlers --------------------------------------
 
-$("#cb_axes" ).on ('change', () => { myCanvas3D.toggleAxes  (); });
-$("#cb_grid" ).on ('change', () => { myCanvas3D.toggleGrid  (); });
-$("#cb_floor").on ('change', () => { myCanvas3D.toggleFloor (); });
+$('#cb_axes' ).on ('change', () => { myCanvas3D.toggleAxes  (); });
+$('#cb_grid' ).on ('change', () => { myCanvas3D.toggleGrid  (); });
+$('#cb_floor').on ('change', () => { myCanvas3D.toggleFloor (); });
 
 
 //--- Startup ---------------------------------------------
@@ -72,7 +76,7 @@ export function test_Points ()
 
     for (let i=0; i<500; i++)
     {
-      mat = new myCanvas3D.threejs.PointsMaterial ( { color:Utils.randInt(0,16777215), size: Utils.randFloat(0.1,0.5) } );  //, size:1 } );
+      mat = new myCanvas3D.threejs.PointsMaterial ( { color:Utils.randColorNum(), size: Utils.randFloat(0.1,0.5) } );  //, size:1 } );
       mat.sizeAttenuation = false;
       myCanvas3D.addPoint (Utils.randFloat(-5,5), Utils.randFloat(-5,5), Utils.randFloat(-5,5), mat);
     }
@@ -97,7 +101,7 @@ export function test_Lines ()
 
     for (let i=0; i<100; i++)
     {
-      mat = new myCanvas3D.threejs.LineBasicMaterial ( { color:Utils.randInt(0,16777215) } );
+      mat = new myCanvas3D.threejs.LineBasicMaterial ( { color:Utils.randColorNum() } );
       myCanvas3D.addLine (Utils.randFloat(-5,5), Utils.randFloat(-5,5), Utils.randFloat(-5,5),
                           Utils.randFloat(-5,5), Utils.randFloat(-5,5), Utils.randFloat(-5,5), mat);
     }
@@ -122,7 +126,7 @@ export function test_Planes ()
 
     for (let i=0; i<100; i++)
     {
-      mat = new myCanvas3D.threejs.MeshStandardMaterial ( { color:Utils.randInt(0,16777215) } );
+      mat = new myCanvas3D.threejs.MeshStandardMaterial ( { color:Utils.randColorNum() } );
       myCanvas3D.addPlane (Utils.randFloat(-5,5), Utils.randFloat(-5,5), Utils.randFloat(-5,5),  // (x, y, z, width, height, rotX=0, rotY=0, rotZ=0, material);
                            Utils.randFloat(0.1,3.0), Utils.randFloat(0.1,3.0),
                            Utils.randFloat(-3,3), Utils.randFloat(-3,3), Utils.randFloat(-3,3),
@@ -149,7 +153,7 @@ export function test_Boxes ()
 
     for (let i=0; i<50; i++)
     {
-      mat = new myCanvas3D.threejs.MeshStandardMaterial ( { color:Utils.randInt(0,16777215) } );
+      mat = new myCanvas3D.threejs.MeshStandardMaterial ( { color:Utils.randColorNum() } );
       myCanvas3D.addBox (Utils.randFloat(-5,5), Utils.randFloat(-5,5), Utils.randFloat(-5,5),
                          Utils.randFloat(0.1,2.0), Utils.randFloat(0.1,2.0), Utils.randFloat(0.1,2.0),
                          mat);

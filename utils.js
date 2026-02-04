@@ -23,8 +23,8 @@ export function randColorNum ()         { return randInt (0, 16777216);         
 export function randGradient (ctx, x1, y1, x2, y2)
 {
   const grad = ctx.createLinearGradient(x1, y1, x2, y2);
-  grad.addColorStop(0.0, randColor());
-  grad.addColorStop(0.5, randColor());
-  grad.addColorStop(1.0, randColor());
+  grad.addColorStop(0.0, randColorCSS());
+  grad.addColorStop(0.5, randColorCSS());
+  grad.addColorStop(1.0, randColorCSS());
   return grad;
 }

@@ -14,22 +14,27 @@
 
 //--- Imports ---------------------------------------------
 
-import { DVCanvas2D } from "./DVCanvas2D.js";
+import { DVCanvas2D } from './DVCanvas2D.js';
+import * as Utils from './utils.js';
 
 //--- Globals ---------------------------------------------
 
 // Create a DVCanvas2D object
-const myCanvas2D = new DVCanvas2D ("canvas2D");
-const ccx        = myCanvas2D.cWidth  / 2;
-const ccy        = myCanvas2D.cHeight / 2;
+const myCanvas2D = new DVCanvas2D (1024, 768, 'black');
+
+// Add its canvas element to the placeholder div
+$('#canvas2D').append (myCanvas2D.canvas);
+
+const ccx = myCanvas2D.cWidth  / 2;
+const ccy = myCanvas2D.cHeight / 2;
 
 let interval2D = undefined;  // for interval timers
 let keydown2D  = undefined;  // for keydown event listener
 
 function rand2DWidth  () { return Utils.randInt (0, myCanvas2D.cWidth ); }
 function rand2DHeight () { return Utils.randInt (0, myCanvas2D.cHeight); }
-function isTrans      () { return document.getElementById("cb_transparent").checked; }
-function isGrad       () { return document.getElementById("cb_gradient"   ).checked; }
+function isTrans      () { return document.getElementById('cb_transparent').checked; }
+function isGrad       () { return document.getElementById('cb_gradient'   ).checked; }
 
 //--- reset -------------------------------------------------------------------
 
@@ -65,7 +70,7 @@ export function test_TestBounds ()
   }
   else
   {
-    myCanvas2D.drawRectangle (0, 0, myCanvas2D.cWidth, myCanvas2D.cHeight, "#FFFF00");
+    myCanvas2D.drawRectangle (0, 0, myCanvas2D.cWidth, myCanvas2D.cHeight, '#FFFF00');
     drawn = true;
   }
 }
@@ -79,7 +84,7 @@ export function test_drawPixel ()
 
   // Draw it
   for (let i=0; i<1000; i++)
-    myCanvas2D.drawPixel (rand2DWidth(), rand2DHeight(), Utils.randColor());
+    myCanvas2D.drawPixel (rand2DWidth(), rand2DHeight(), Utils.randColorCSS());
 }
 
 //--- test_drawPoint ----------------------------------------------------------
@@ -91,7 +96,7 @@ export function test_drawPoint ()
 
   // Non-filled points
   for (let i=0; i<100; i++)
-    myCanvas2D.drawPoint (rand2DWidth(), rand2DHeight(), Utils.randInt(1,20), Utils.randColor(), Utils.randBin() ? myCanvas2D.fill : Utils.randInt(1,10));
+    myCanvas2D.drawPoint (rand2DWidth(), rand2DHeight(), Utils.randInt(1,20), Utils.randColorCSS(), Utils.randBin() ? myCanvas2D.fill : Utils.randInt(1,10));
 }
 
 //--- test_drawLine -----------------------------------------------------------
@@ -108,7 +113,7 @@ export function test_drawLine ()
     const y1 = rand2DHeight ();
     const x2 = rand2DWidth  ();
     const y2 = rand2DHeight ();
-    const c  = isGrad() ? Utils.randGradient(myCanvas2D.cc, x1, y1, x2, y2) : Utils.randColor();
+    const c  = isGrad() ? Utils.randGradient(myCanvas2D.cc, x1, y1, x2, y2) : Utils.randColorCSS();
     myCanvas2D.drawLine (x1, y1, x2, y2, c, Utils.randInt(1,10), myCanvas2D.endCaps[Utils.randInt(0,2)]);
   }
 }
@@ -127,7 +132,7 @@ export function test_drawRectangle ()
     const y = rand2DHeight ();
     const w = Utils.randInt (1, myCanvas2D.cWidth - x);
     const h = Utils.randInt (1, myCanvas2D.cHeight - y);
-    const c = isGrad() ? Utils.randGradient(myCanvas2D.cc, x, y, x+w, y+h) : Utils.randColor();
+    const c = isGrad() ? Utils.randGradient(myCanvas2D.cc, x, y, x+w, y+h) : Utils.randColorCSS();
     myCanvas2D.drawRectangle (x, y, w, h, c, Utils.randBin() ? myCanvas2D.fill : Utils.randInt(1,10));
   }
 }
@@ -148,7 +153,7 @@ export function test_drawPoly ()
     for (let j=0; j<numVertices; j++)
       vertices.push ({ x:rand2DWidth(), y:rand2DHeight() });
 
-    const c = isGrad() ? Utils.randGradient(myCanvas2D.cc, vertices[0].x, vertices[0].y, vertices[1].x, vertices[1].y) : Utils.randColor();
+    const c = isGrad() ? Utils.randGradient(myCanvas2D.cc, vertices[0].x, vertices[0].y, vertices[1].x, vertices[1].y) : Utils.randColorCSS();
     const t = Utils.randBin() ? myCanvas2D.fill : Utils.randInt(1,10);
     const j = myCanvas2D.joints[Utils.randInt(0,myCanvas2D.joints.length-1)];
     myCanvas2D.drawPoly (vertices, c, t, j, Utils.randBin());
@@ -169,7 +174,7 @@ export function test_drawEllipse ()
     const y = rand2DHeight ();
     const w = Utils.randInt (1, myCanvas2D.cWidth  - x) / 4;
     const h = Utils.randInt (1, myCanvas2D.cHeight - y) / 4;
-    const c = isGrad() ? Utils.randGradient(myCanvas2D.cc, x, y, x+w, y+h) : Utils.randColor();
+    const c = isGrad() ? Utils.randGradient(myCanvas2D.cc, x, y, x+w, y+h) : Utils.randColorCSS();
     myCanvas2D.drawEllipse (x, y, w, h, c, Utils.randBin() ? myCanvas2D.fill : Utils.randInt(1,10), Utils.randAngle());
   }
 }
@@ -187,7 +192,7 @@ export function test_drawArc ()
     const cx = rand2DWidth();
     const cy = rand2DHeight();
     const r  = Utils.randInt(10,300);
-    const c  = isGrad() ? Utils.randGradient(myCanvas2D.cc, cx, cy, cx+r, cy+r) : Utils.randColor();
+    const c  = isGrad() ? Utils.randGradient(myCanvas2D.cc, cx, cy, cx+r, cy+r) : Utils.randColorCSS();
     const a1 = Utils.randAngle();
     const a2 = Utils.randAngle();
     const t  = Utils.randInt(0,50);
@@ -204,7 +209,7 @@ export function test_drawCurve ()
   reset();
 
   for (let i=0; i<50; i++)
-    myCanvas2D.drawCurve (rand2DWidth(), rand2DHeight(), rand2DWidth(), rand2DHeight(), Utils.randColor(), Utils.randBin() ? "h":"v", Utils.randInt(1,10));
+    myCanvas2D.drawCurve (rand2DWidth(), rand2DHeight(), rand2DWidth(), rand2DHeight(), Utils.randColorCSS(), Utils.randBin() ? 'h':'v', Utils.randInt(1,10));
 }
 
 //--- test_drawPie ------------------------------------------------------------
@@ -220,7 +225,7 @@ export function test_drawPie ()
     const cx = rand2DWidth();
     const cy = rand2DHeight();
     const r  = Utils.randInt(10,200);
-    const c  = isGrad() ? Utils.randGradient(myCanvas2D.cc, cx, cy, cx+r, cy+r) : Utils.randColor();
+    const c  = isGrad() ? Utils.randGradient(myCanvas2D.cc, cx, cy, cx+r, cy+r) : Utils.randColorCSS();
     const p1 = Utils.randInt(0, 360);
     const p2 = Utils.randInt(0, 360);
 
@@ -237,7 +242,7 @@ export function test_adjustBrightness ()
 
   for (let x=20; x<myCanvas2D.cWidth-40; x+=40)
   {
-    const color = Utils.randColor();
+    const color = Utils.randColorCSS();
 
     for (let y=20, amount=-90; amount<=90; y+=35, amount+=10)
       myCanvas2D.drawRectangle (x, y, 30, 35, myCanvas2D.adjustBrightness (color, amount), myCanvas2D.fill);
@@ -252,8 +257,8 @@ export function test_shadows ()
   reset();
 
   myCanvas2D.drawRectangle (0, 0, myCanvas2D.cWidth, myCanvas2D.cHeight, '#F0F0F0', myCanvas2D.fill);
-  myCanvas2D.drawText (10, 10, "Shadows work with rectangles, polygons, text and images.", 'black');
-  myCanvas2D.drawText (10, 25, "Notice the shadow conforms to the shape of transparent PNG images.", 'black');
+  myCanvas2D.drawText (10, 10, 'Shadows work with rectangles, polygons, text and images.', 'black');
+  myCanvas2D.drawText (10, 25, 'Notice the shadow conforms to the shape of transparent PNG images.', 'black');
 
   // Set shadow specs
   myCanvas2D.setShadow (10, 10, '#202020', 10);
@@ -263,10 +268,10 @@ export function test_shadows ()
   myCanvas2D.drawPoly      ([{ x:100, y:250 }, { x:400, y:250 }, { x:250, y:450 }], '#004080');
 
   // Test if transparent PNG can cast a shadow according to its visible shape
-  myCanvas2D.drawImage (100, 500, "ship.png", () =>
+  myCanvas2D.drawImage (100, 500, 'ship.png', () =>
   {
     myCanvas2D.setShadow (0, 0, 'transparent', 0);  // turn off shadows
-    myCanvas2D.drawImage (300, 500, "ship.png");    // draw ship without shadows
+    myCanvas2D.drawImage (300, 500, 'ship.png');    // draw ship without shadows
   });
 }
 
@@ -277,13 +282,13 @@ export function test_drawText ()
   // Reset this demo
   reset();
 
-  const textSamples  = [ "Hello", "HTML5", "Canvas Element", "Fast", "Browser", "2D", "Graphics" ];
+  const textSamples  = [ 'Hello', 'HTML5', 'Canvas Element', 'Fast', 'Browser', '2D', 'Graphics' ];
 
   // Draw it
   for (let i=0; i<100; i++)
   {
-    const font = Utils.randInt(5,50).toString() + "px Arial";  // 5px..50px
-    myCanvas2D.drawText (rand2DWidth(), rand2DHeight(), textSamples[Utils.randInt(0, textSamples.length-1)], Utils.randColor(), font);
+    const font = Utils.randInt(5,50).toString() + 'px Arial';  // 5px..50px
+    myCanvas2D.drawText (rand2DWidth(), rand2DHeight(), textSamples[Utils.randInt(0, textSamples.length-1)], Utils.randColorCSS(), font);
   }
 }
 
@@ -294,19 +299,19 @@ export function test_getTextSize ()
   // Reset this demo
   reset();
 
-  const standardFont = "16px sans-serif";
-  const textSamples  = [ "Hello", "HTML5", "Canvas Element", "Fast", "Browser", "2D", "Graphics" ];
+  const standardFont = '16px sans-serif';
+  const textSamples  = [ 'Hello', 'HTML5', 'Canvas Element', 'Fast', 'Browser', '2D', 'Graphics' ];
 
   // Draw it
   for (let i=0; i<20; i++)
   {
     const x    = rand2DWidth();
     const y    = rand2DHeight();
-    const font = Utils.randInt(5,50).toString() + "px Arial";  // 5px..50px
+    const font = Utils.randInt(5,50).toString() + 'px Arial';  // 5px..50px
     const text = textSamples[Utils.randInt(0, textSamples.length-1)];
     const size = myCanvas2D.getTextSize (text, font);
-    myCanvas2D.drawText (x, y, text, Utils.randColor(), font);
-    myCanvas2D.drawText (x, y+size.height+2, `(${size.width} x ${size.height})`, "#FFFFFF", standardFont);
+    myCanvas2D.drawText (x, y, text, Utils.randColorCSS(), font);
+    myCanvas2D.drawText (x, y+size.height+2, `(${size.width} x ${size.height})`, '#FFFFFF', standardFont);
   }
 }
 
@@ -318,7 +323,7 @@ export function test_getDrawBlock ()
   reset();
 
   // Draw sample image
-  myCanvas2D.drawImage (50, 50, "img1.jpg", () =>
+  myCanvas2D.drawImage (50, 50, 'img1.jpg', () =>
   {
     // Once loaded, get image block
     const imageBlock = myCanvas2D.getBlock (120, 180, 180, 60);
@@ -342,11 +347,11 @@ export function test_drawImage ()
 
   const images =
   [
-    "img1.jpg",
-    "img2.jpg",
-    "img3.jpg",
-    "img4.jpg",
-    "img5.jpg",
+    'img1.jpg',
+    'img2.jpg',
+    'img3.jpg',
+    'img4.jpg',
+    'img5.jpg',
   ];
 
   for (let i=0; i<10; i++)
@@ -361,12 +366,12 @@ export function test_drawDraggable ()
   reset();
 
   // Fill canvas with background
-  myCanvas2D.drawImage (0, 0, "Planet&Moons.jpg", () =>
+  myCanvas2D.drawImage (0, 0, 'Planet&Moons.jpg', () =>
   {
-    myCanvas2D.drawText (5,  5, "Drag spaceship", '#FFFFFF');
-    myCanvas2D.drawText (5, 20, "See new coords in console", '#FFFFFF');
-    // myCanvas2D.drawDraggable (200, 100, "ship.png", (x, y)=>{ console.info (x + ', ' + y); }, (x, y)=>{ console.info ('Done: x=' + x + ', y=' + y); }, true, true);
-    myCanvas2D.drawDraggable (200, 100, "ship.png", myDraggable, myDraggableDone, false, true, true);
+    myCanvas2D.drawText (5,  5, 'Drag spaceship', '#FFFFFF');
+    myCanvas2D.drawText (5, 20, 'See new coords in console', '#FFFFFF');
+    // myCanvas2D.drawDraggable (200, 100, 'ship.png', (x, y)=>{ console.info (x + ', ' + y); }, (x, y)=>{ console.info ('Done: x=' + x + ', y=' + y); }, true, true);
+    myCanvas2D.drawDraggable (200, 100, 'ship.png', myDraggable, myDraggableDone, false, true, true);
   });
 }
 
@@ -390,28 +395,28 @@ export function test_drawLinearScale ()
   if (Utils.randInt(0, 1) == 0)
   {
     // Horizontal Tests
-    myCanvas2D.drawLinearScale (50,  80+70*0, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (50,  80+70*1, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (50,  80+70*2, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (50,  80+70*3, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (50, 100+70*4, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (50, 100+70*5, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (50, 100+70*6, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (50, 100+70*7, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (50, 100+70*8, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (50,  80+70*0, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (50,  80+70*1, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (50,  80+70*2, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (50,  80+70*3, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (50, 100+70*4, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (50, 100+70*5, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (50, 100+70*6, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (50, 100+70*7, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (50, 100+70*8, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
   }
   else
   {
     // Vertical Tests
-    myCanvas2D.drawLinearScale (100+100*0, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (100+100*1, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (100+100*2, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (100+100*3, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (120+100*4, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (120+100*5, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (120+100*6, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (120+100*7, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLinearScale (120+100*8, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), "sec", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLinearScale (100+100*0, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (100+100*1, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (100+100*2, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (100+100*3, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (120+100*4, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (120+100*5, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (120+100*6, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (120+100*7, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLinearScale (120+100*8, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(-100,100), Utils.randFloat(101,1000), 'sec', Utils.randColorCSS(), Utils.randColorCSS());
   }
 }
 
@@ -425,28 +430,28 @@ export function test_drawLogScale ()
   if (Utils.randInt(0, 1) == 0)
   {
     // Horizontal Tests
-    myCanvas2D.drawLogScale (50,  80+70*0, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (50,  80+70*1, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (50,  80+70*2, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (50,  80+70*3, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (50, 100+70*4, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (50, 100+70*5, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (50, 100+70*6, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (50, 100+70*7, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (50, 100+70*8, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (50,  80+70*0, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (50,  80+70*1, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (50,  80+70*2, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (50,  80+70*3, 900, 20, myCanvas2D.ScaleOrientation.HorizTop   , Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (50, 100+70*4, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (50, 100+70*5, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (50, 100+70*6, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (50, 100+70*7, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (50, 100+70*8, 900, 20, myCanvas2D.ScaleOrientation.HorizBottom, Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
   }
   else
   {
     // Vertical Tests
-    myCanvas2D.drawLogScale (100+100*0, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (100+100*1, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (100+100*2, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (100+100*3, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (120+100*4, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (120+100*5, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (120+100*6, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (120+100*7, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
-    myCanvas2D.drawLogScale (120+100*8, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), "Hz", Utils.randColor(), Utils.randColor());
+    myCanvas2D.drawLogScale (100+100*0, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (100+100*1, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (100+100*2, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (100+100*3, 700, 20, 650, myCanvas2D.ScaleOrientation.VertLeft , Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (120+100*4, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (120+100*5, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (120+100*6, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (120+100*7, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
+    myCanvas2D.drawLogScale (120+100*8, 700, 20, 650, myCanvas2D.ScaleOrientation.VertRight, Utils.randFloat(1,100), Utils.randFloat(101,1000000), 'Hz', Utils.randColorCSS(), Utils.randColorCSS());
   }
 }
 
@@ -457,8 +462,8 @@ export function test_drawCircularScale ()
   // Reset this demo
   reset();
 
-  myCanvas2D.drawCircularScale (300, ccy, Utils.randInt(50, 250), Utils.randFloat(-400, 200), Utils.randFloat(201, 5000), Utils.randInt(-180, 0), Utils.randInt(1, 180), "°K", Utils.randColor());
-  myCanvas2D.drawCircularScale (700, ccy, Utils.randInt(50, 250), Utils.randFloat(-400, 200), Utils.randFloat(201, 5000), Utils.randInt(-180, 0), Utils.randInt(1, 180), "°K", Utils.randColor());
+  myCanvas2D.drawCircularScale (300, ccy, Utils.randInt(50, 250), Utils.randFloat(-400, 200), Utils.randFloat(201, 5000), Utils.randInt(-180, 0), Utils.randInt(1, 180), '°K', Utils.randColorCSS());
+  myCanvas2D.drawCircularScale (700, ccy, Utils.randInt(50, 250), Utils.randFloat(-400, 200), Utils.randFloat(201, 5000), Utils.randInt(-180, 0), Utils.randInt(1, 180), '°K', Utils.randColorCSS());
 }
 
 
@@ -478,7 +483,7 @@ export function test_Burst ()
 
   // Draw it
   for (let i=0; i<500; i++)
-    myCanvas2D.drawLine (cx, cy, rand2DWidth(), rand2DHeight(), Utils.randColor());
+    myCanvas2D.drawLine (cx, cy, rand2DWidth(), rand2DHeight(), Utils.randColorCSS());
 }
 
 //--- test_Web1 --------------------------------------------------------------
@@ -502,7 +507,7 @@ export function test_Web1 ()
       { x : 0                    , y : y                      },
       { x : myCanvas2D.cWidth - x, y : 0                      },
       { x : myCanvas2D.cWidth    , y : myCanvas2D.cHeight - y }
-    ], Utils.randColor());
+    ], Utils.randColorCSS());
   }
 
   // Ellipse Web
@@ -513,7 +518,7 @@ export function test_Web1 ()
 
   step = Utils.randFloat (2, 5);
   for (let rot=-180; rot<180; rot+=step)
-    myCanvas2D.drawEllipse (cx, cy, rx, ry, Utils.randColor(), 1, rot);
+    myCanvas2D.drawEllipse (cx, cy, rx, ry, Utils.randColorCSS(), 1, rot);
 }
 
 //--- test_Web2 --------------------------------------------------------------
@@ -534,7 +539,7 @@ export function test_Web2 ()
     for (let rx=0; rx<myCanvas2D.cWidth/2; rx+=radStep)
     {
       let ry = myCanvas2D.cHeight/2 - (rx * yFactor);
-      myCanvas2D.drawEllipse (cx, cy, rx, ry, Utils.randColor(), 1, rot);
+      myCanvas2D.drawEllipse (cx, cy, rx, ry, Utils.randColorCSS(), 1, rot);
     }
   }
 }
@@ -553,7 +558,7 @@ export function test_FractalTree ()
     myCanvas2D.cc.beginPath();
     myCanvas2D.cc.save();
 
-    myCanvas2D.cc.strokeStyle = Utils.randColor();
+    myCanvas2D.cc.strokeStyle = Utils.randColorCSS();
 
     myCanvas2D.cc.translate(startX, startY);
     myCanvas2D.cc.rotate(angle * Math.PI/180);
@@ -665,7 +670,7 @@ export function test_Snake ()
     const xRad = Utils.randInt (10, 30);
     const yRad = Utils.randInt (10, 30);
 
-    myCanvas2D.drawEllipse (x, y, xRad, yRad, Utils.randColor());
+    myCanvas2D.drawEllipse (x, y, xRad, yRad, Utils.randColorCSS());
 
     const xStep = Utils.randInt (10, 20);
     const yStep = Utils.randInt ( 8, 16);
@@ -705,7 +710,7 @@ export function test_PolyBounce ()
 
   const maxX      = myCanvas2D.cWidth  - 1;
   const maxY      = myCanvas2D.cHeight - 1;
-  const color     = Utils.randColor();
+  const color     = Utils.randColorCSS();
   const thickness = Utils.randInt (1, 10);
 
   interval2D = setInterval (() =>
@@ -743,7 +748,7 @@ export function test_Tunnel ()
   reset ();
 
   for (let i=0; i<maxRings; i++)
-    rings.push ({ z: i * 100, color: Utils.randColor() });
+    rings.push ({ z: i * 100, color: Utils.randColorCSS() });
 
   interval2D = setInterval (() =>
   {
@@ -760,7 +765,7 @@ export function test_Tunnel ()
       if (ring.z <= 0)
       {
         ring.z = maxRings * 100;
-        ring.color = Utils.randColor();
+        ring.color = Utils.randColorCSS();
       }
     }
   }, 33);  // ~30fps
